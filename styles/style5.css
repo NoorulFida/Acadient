@@ -1,0 +1,44 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.note-page {
+    width: 350px;
+    min-height: 450px;
+    background: white;
+    border: 3px solid #000000;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.note-page h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.note-page ol {
+    padding-left: 20px;
+}
+
+.note-page li {
+    height: 30px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #555;
+}
+.done{
+    border-radius: 5px;
+    font-size: 18px;
+    margin-left: 140px;
+    margin-top: 20px;
+}
+.arrow{
+    font-size: 30px;
+    width: 50px;
+    border: none;
+    margin-right: 50px;
+  
+  }

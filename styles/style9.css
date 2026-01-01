@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f4f8;
+    padding: 20px;
+  }
+
+  .timetable {
+    display: grid;
+    grid-template-columns: 100px repeat(5, 1fr);
+    gap: 15px;
+    max-width: 700px;
+    margin: auto;
+    align-items: center;
+  }
+
+  .header {
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .day {
+    font-weight: bold;
+    text-align: right;
+    padding-right: 10px;
+  }
+
+  .circle {
+    width: 60px;
+    height: 60px;
+    border-radius:60%;
+    background: #97b4fa;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border: black;
+  }
+
+  .circle:hover {
+    background: #388E3C;
+  }
+  button{
+    font-size: 30px;
+    width: 50px;
+    border: none;
+  
+  }
+
+
+

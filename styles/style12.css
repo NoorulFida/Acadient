@@ -1,0 +1,52 @@
+body {
+  background: #f4f6f9;
+  font-family: "Segoe UI", Arial;
+}
+
+.top-bar {
+  background: #2c3e50;
+  color: white;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.back {
+  color: white;
+  font-size: 22px;
+  text-decoration: none;
+}
+
+.profile-card {
+  width: 320px;
+  margin: 40px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.avatar {
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+.roll {
+  color: gray;
+  margin-bottom: 20px;
+}
+
+.info div {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+.icon {
+  text-decoration: none;
+  font-size: 18px;
+  margin-left: 15px;
+  cursor: pointer;
+  color: inherit;
+}

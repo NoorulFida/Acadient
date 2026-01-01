@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimeTrack | Timetable</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      min-height: 100vh;
+      padding: 30px 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 20s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -30%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      animation: float 15s infinite ease-in-out reverse;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(30px, -30px) rotate(120deg); }
+      66% { transform: translate(-20px, 20px) rotate(240deg); }
+    }
+
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .arrow {
+      font-size: 24px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 16px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      line-height: 1;
+      color: #2d3748;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .arrow:hover {
+      background: linear-gradient(135deg, #2c5364 0%, #203a43 100%);
+      color: white;
+      transform: translateX(-5px);
+      border-color: #2c5364;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 45px;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 15px;
+      background: linear-gradient(135deg, #2c5364 0%, #203a43 100%);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      color: white;
+      box-shadow: 0 8px 20px rgba(44, 83, 100, 0.3);
+    }
+
+    h2 {
+      color: #2d3748;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #718096;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .timetable {
+      display: grid;
+      grid-template-columns: 120px repeat(5, 1fr);
+      gap: 12px;
+      overflow-x: auto;
+    }
+
+    .timetable-cell {
+      padding: 16px;
+      text-align: center;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .header-cell {
+      font-weight: 700;
+      background: linear-gradient(135deg, #2c5364 0%, #203a43 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(44, 83, 100, 0.2);
+    }
+
+    .day-cell {
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .subject-cell {
+      background: white;
+      border: 2px solid #e2e8f0;
+      color: #2d3748;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .subject-cell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(44, 83, 100, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .subject-cell:hover::before {
+      left: 100%;
+    }
+
+    .subject-cell:hover {
+      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      border-color: #2c5364;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(44, 83, 100, 0.15);
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 60px 40px;
+      color: #718096;
+      font-size: 16px;
+      font-weight: 500;
+      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      border-radius: 12px;
+      border: 2px dashed #cbd5e0;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 15px;
+      }
+
+      .container {
+        padding: 35px 25px;
+      }
+
+      .logo-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 25px;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+
+      .timetable {
+        grid-template-columns: 90px repeat(5, 1fr);
+        gap: 10px;
+      }
+
+      .timetable-cell {
+        padding: 12px 10px;
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 15px 10px;
+      }
+
+      .container {
+        padding: 30px 20px;
+      }
+
+      .logo-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      .subtitle {
+        font-size: 13px;
+      }
+
+      .timetable {
+        grid-template-columns: 80px repeat(5, 1fr);
+        gap: 8px;
+      }
+
+      .timetable-cell {
+        padding: 10px 6px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button class="arrow" onclick="location.href='page2.html'">← Back</button>
+  </div>
+
+  <div class="container">
+    <div class="page-header">
+      <div class="logo-icon">📅</div>
+      <h2 id="title">Timetable</h2>
+      <p class="subtitle" id="subtitle">View your weekly schedule</p>
+    </div>
+
+    <div class="timetable" id="timetable"></div>
+  </div>
+
+  <script>
+    /* ================= FULL TIMETABLE JSON ================= */
+    const timetableData = {
+      "Bsc Computer Science": {
+        "3": {
+          "Monday": [
+            "Mathematics",
+            "Data Structures",
+            "Operating Systems",
+            "DBMS",
+            "Programming Lab"
+          ],
+          "Tuesday": [
+            "Operating Systems",
+            "Mathematics",
+            "DBMS",
+            "Data Structures",
+            "Library"
+          ],
+          "Wednesday": [
+            "Data Structures",
+            "Operating Systems",
+            "Mathematics",
+            "DBMS",
+            "Programming Lab"
+          ],
+          "Thursday": [
+            "DBMS",
+            "Data Structures",
+            "Operating Systems",
+            "Mathematics",
+            "Sports"
+          ],
+          "Friday": [
+            "Programming Lab",
+            "Mathematics",
+            "Data Structures",
+            "Operating Systems",
+            "DBMS"
+          ]
+        }
+      }
+    };
+
+    /* ================= READ USER DATA ================= */
+    const userData = JSON.parse(sessionStorage.getItem("data"));
+    const timetableDiv = document.getElementById("timetable");
+    const heading = document.getElementById("title");
+    const subtitle = document.getElementById("subtitle");
+
+    if (!userData) {
+      timetableDiv.innerHTML = '<div class="no-data">📋 No data found. Please go back and select your preferences.</div>';
+    } else {
+      const { department, semester, day } = userData;
+      const timetable = timetableData[department]?.[semester];
+      heading.textContent = `${department}`;
+      subtitle.textContent = `Semester ${semester} Schedule`;
+
+      if (!timetable) {
+        timetableDiv.innerHTML = '<div class="no-data">📋 Timetable not available for the selected options.</div>';
+      } else {
+        const daysToShow = day === "All" ? Object.keys(timetable) : [day];
+
+        let html = `
+          <div></div>
+          <div class="timetable-cell header-cell">Hour 1</div>
+          <div class="timetable-cell header-cell">Hour 2</div>
+          <div class="timetable-cell header-cell">Hour 3</div>
+          <div class="timetable-cell header-cell">Hour 4</div>
+          <div class="timetable-cell header-cell">Hour 5</div>
+        `;
+
+        daysToShow.forEach(d => {
+          html += `<div class="timetable-cell day-cell">${d}</div>`;
+          timetable[d].forEach(subject => {
+            html += `<div class="timetable-cell subject-cell">${subject}</div>`;
+          });
+        });
+
+        timetableDiv.innerHTML = html;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+.button-container{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 250px;
+    margin: 50px;
+    margin-left: 150px;
+    margin-top: 250px;}
+     .button-container button{
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 15px;
+    margin-top: 12px;
+    font-family: initial;
+    font-size: 18px;
+   }
+   .options{
+    display: none;
+    margin-bottom: 15px;
+    padding-left: 10px;
+   }
+   .dept-select{
+    width: 20px;
+    margin-left: 50px;
+
+   }
+   .sem-select{
+     width: 20px;
+    margin-left: 70px;
+   }
+   .hour-select{
+    width: 20px;
+    margin-left: 100px;
+
+   }
+   .submit{
+    margin-left: 250px;
+    font-size: large;
+    font-family:initial
+   }
+  .stdnt{
+    font-size:15px;
+    border-radius:14px;
+    flex-direction: row;
+    margin-left: 300px;
+  }
+.tchr{
+font-size:15px;
+    border-radius:14px;}

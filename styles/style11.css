@@ -1,0 +1,80 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+  color: #333;
+}
+
+/* Top Bar */
+.top-bar {
+  background: #2c3e50;
+  color: white;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar h1 {
+  font-size: 20px;
+}
+
+.icons span {
+  margin-left: 15px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* Main Container */
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+/* Card */
+.card {
+  background: white;
+  width: 420px;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Rows */
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+/* Labels */
+.label {
+  font-weight: 600;
+  color: #555;
+}
+
+/* Status */
+.status {
+  color: green;
+  font-weight: bold;
+}
+
+/* Assignment Highlight */
+.assignment {
+  background: #f1f8ff;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+       

@@ -1,0 +1,38 @@
+.form-container{
+      display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 320px;
+    margin: auto;
+}
+label{
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+input, select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    }
+    button{
+        width: 100px;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 50px;
+        margin-left: 110px;
+    }
+.form-group{
+    margin-bottom: 16px;}
+
+   
+    .sub{font-size: 20px;}
+    .dept{ font-size: 20px;}
+    .mail{font-size: 20PX}
+    .pswd{font-size: 20px;}
+    .name{font-size: 20px;}
+    .sem{font-size: 20px;}
+    .admno{font-size: 20px;}
+    
+   

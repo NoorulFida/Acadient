@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Timetable | TimeTrack</title>
+<link rel="stylesheet" href="styles/style9.css">
+</head>
+
+<body>
+<div class="container">
+  <div class="header">
+    <button class="arrow" onclick="location.href='page2.html'">← Back</button>
+    <h1 style="color: #333;">📅 Create Complete Timetable</h1>
+    <div class="period-counter" id="periodCount">0/25 Periods</div>
+  </div>
+
+  <div class="page-header">
+    <div class="logo-icon">⏰</div>
+    <h2>5 Days × 5 Hours = 25 Periods</h2>
+    <p class="subtitle">Create a complete weekly timetable (Monday to Friday)</p>
+  </div>
+
+  <!-- Timetable Hours Info -->
+  <div class="hours-info">
+    <div class="hour-info">
+      <strong>Hour 1</strong><br>
+      9:00 - 10:00 AM
+    </div>
+    <div class="hour-info">
+      <strong>Hour 2</strong><br>
+      10:00 - 11:00 AM
+    </div>
+    <div class="hour-info">
+      <strong>Hour 3</strong><br>
+      11:15 - 12:15 PM
+    </div>
+    <div class="hour-info">
+      <strong>Hour 4</strong><br>
+      1:15 - 2:15 PM
+    </div>
+    <div class="hour-info">
+      <strong>Hour 5</strong><br>
+      2:15 - 3:15 PM
+    </div>
+  </div>
+
+  <label><strong>Select Department</strong></label>
+  <select id="dept" onchange="updateTimetableTitle()">
+    <option value="">-- Select Department --</option>
+    <option value="Bsc Computer Science">BSc Computer Science</option>
+    <option value="Bsc Information Technology">BSc Information Technology</option>
+    <option value="Bsc Mathematics">BSc Mathematics</option>
+    <option value="BA English">BA English</option>
+    <option value="BCom">BCom</option>
+  </select>
+
+  <label><strong>Select Semester</strong></label>
+  <select id="semester" onchange="updateTimetableTitle()">
+    <option value="">-- Select Semester --</option>
+    <option value="1">Semester 1</option>
+    <option value="2">Semester 2</option>
+    <option value="3">Semester 3</option>
+    <option value="4">Semester 4</option>
+    <option value="5">Semester 5</option>
+    <option value="6">Semester 6</option>
+  </select>
+
+  <div style="margin: 30px 0; text-align: center;">
+    <h3>📅 Weekly Timetable Grid</h3>
+    <p>Fill subjects for each day and period</p>
+  </div>
+
+  <!-- Timetable Input Grid -->
+  <div class="input-grid">
+    <!-- Header Row -->
+    <div class="grid-header"></div>
+    <div class="grid-header">Hour 1<br><small>9:00-10:00</small></div>
+    <div class="grid-header">Hour 2<br><small>10:00-11:00</small></div>
+    <div class="grid-header">Hour 3<br><small>11:15-12:15</small></div>
+    <div class="grid-header">Hour 4<br><small>1:15-2:15</small></div>
+    <div class="grid-header">Hour 5<br><small>2:15-3:15</small></div>
+    
+    <!-- Monday Row -->
+    <div class="day-label">Monday</div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Monday" data-period="1" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Monday" data-period="2" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Monday" data-period="3" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Monday" data-period="4" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Monday" data-period="5" oninput="updatePeriodCount()"></div>
+    
+    <!-- Tuesday Row -->
+    <div class="day-label">Tuesday</div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Tuesday" data-period="1" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Tuesday" data-period="2" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Tuesday" data-period="3" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Tuesday" data-period="4" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Tuesday" data-period="5" oninput="updatePeriodCount()"></div>
+    
+    <!-- Wednesday Row -->
+    <div class="day-label">Wednesday</div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Wednesday" data-period="1" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Wednesday" data-period="2" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Wednesday" data-period="3" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Wednesday" data-period="4" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Wednesday" data-period="5" oninput="updatePeriodCount()"></div>
+    
+    <!-- Thursday Row -->
+    <div class="day-label">Thursday</div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Thursday" data-period="1" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Thursday" data-period="2" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Thursday" data-period="3" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Thursday" data-period="4" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Thursday" data-period="5" oninput="updatePeriodCount()"></div>
+    
+    <!-- Friday Row -->
+    <div class="day-label">Friday</div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Friday" data-period="1" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Friday" data-period="2" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Friday" data-period="3" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Friday" data-period="4" oninput="updatePeriodCount()"></div>
+    <div class="input-cell"><input type="text" placeholder="Enter subject" class="period-input" data-day="Friday" data-period="5" oninput="updatePeriodCount()"></div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div style="display: flex; gap: 10px; margin: 20px 0; justify-content: center;">
+    <button onclick="clearAll()" style="background: #dc3545; padding: 10px 20px; font-size: 14px;">
+      🗑️ Clear All
+    </button>
+    <button onclick="fillSampleData()" style="background: #17a2b8; padding: 10px 20px; font-size: 14px;">
+      📋 Sample Data
+    </button>
+    <button onclick="copyDayPattern()" style="background: #28a745; padding: 10px 20px; font-size: 14px;">
+      📝 Copy Monday
+    </button>
+  </div>
+
+  <!-- Additional Info -->
+  <div style="margin: 30px 0;">
+    <label><strong>Additional Information</strong></label>
+    <textarea id="notes" placeholder="Add timetable notes, teacher names, room numbers, or special instructions..." 
+              style="width:100%; height:100px; padding:15px; border:2px solid #667eea; border-radius:10px; 
+                     margin-top:10px; font-size:16px; resize:vertical;"></textarea>
+  </div>
+
+  <!-- Preview Button -->
+  <button onclick="previewTimetable()" style="background: #17a2b8; margin-right: 15px;">
+    👁️ Preview
+  </button>
+  
+  <!-- Save Button -->
+  <button onclick="saveCompleteTimetable()">
+    💾 Save Complete Timetable
+  </button>
+  
+  <div id="successMessage" style="display:none; text-align:center; margin-top:20px; padding:15px; 
+                                  background:#d4edda; color:#155724; border-radius:10px;">
+    ✅ Timetable saved successfully! 25 periods created.
+  </div>
+</div>
+
+<script type="module" src="js/createCompleteTimetable.js"></script>
+<script>
+// Helper functions
+function updatePeriodCount() {
+  const inputs = document.querySelectorAll('.period-input');
+  const filled = Array.from(inputs).filter(input => input.value.trim() !== '').length;
+  document.getElementById('periodCount').textContent = `${filled}/25 Periods`;
+  
+  // Update color based on progress
+  const counter = document.getElementById('periodCount');
+  if (filled === 25) {
+    counter.style.background = '#28a745';
+  } else if (filled >= 15) {
+    counter.style.background = '#ffc107';
+    counter.style.color = '#000';
+  } else {
+    counter.style.background = '#667eea';
+    counter.style.color = '#fff';
+  }
+}
+
+function clearAll() {
+  if (confirm('Are you sure you want to clear all subjects?')) {
+    document.querySelectorAll('.period-input').forEach(input => {
+      input.value = '';
+    });
+    updatePeriodCount();
+  }
+}
+
+function fillSampleData() {
+  const subjects = [
+    'Mathematics', 'Data Structures', 'Operating Systems', 'DBMS', 'Programming Lab',
+    'Computer Networks', 'Algorithms', 'Software Engineering', 'Web Technology', 'AI',
+    'Discrete Math', 'OOP', 'Computer Graphics', 'Cyber Security', 'Cloud Computing',
+    'Compiler Design', 'Microprocessors', 'Digital Logic', 'Python', 'Java',
+    'Statistics', 'Calculus', 'Linear Algebra', 'Theory of Computation', 'Mobile Computing'
+  ];
+  
+  const inputs = document.querySelectorAll('.period-input');
+  inputs.forEach((input, index) => {
+    if (index < subjects.length) {
+      input.value = subjects[index];
+    }
+  });
+  updatePeriodCount();
+}
+
+function copyDayPattern() {
+  const mondayInputs = document.querySelectorAll('.period-input[data-day="Monday"]');
+  const days = ['Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  
+  days.forEach(day => {
+    mondayInputs.forEach((input, index) => {
+      const targetInput = document.querySelector(`.period-input[data-day="${day}"][data-period="${index + 1}"]`);
+      if (targetInput && input.value.trim()) {
+        targetInput.value = input.value;
+      }
+    });
+  });
+  updatePeriodCount();
+}
+
+function updateTimetableTitle() {
+  const dept = document.getElementById('dept').value;
+  const sem = document.getElementById('semester').value;
+  const title = document.querySelector('.page-header h2');
+  
+  if (dept && sem) {
+    title.textContent = `${dept} - Semester ${sem} Timetable`;
+  }
+}
+
+function previewTimetable() {
+  // Create a preview of the timetable
+  const dept = document.getElementById('dept').value;
+  const sem = document.getElementById('semester').value;
+  
+  if (!dept || !sem) {
+    alert('Please select department and semester first');
+    return;
+  }
+  
+  // Store data temporarily and open preview
+  const timetableData = getTimetableData();
+  sessionStorage.setItem('previewData', JSON.stringify(timetableData));
+  window.open('timetablePreview.html', '_blank');
+}
+
+function getTimetableData() {
+  const data = {
+    department: document.getElementById('dept').value,
+    semester: document.getElementById('semester').value,
+    timetable: {}
+  };
+  
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  days.forEach(day => {
+    data.timetable[day] = {};
+    for (let i = 1; i <= 5; i++) {
+      const input = document.querySelector(`.period-input[data-day="${day}"][data-period="${i}"]`);
+      data.timetable[day][i] = input.value.trim() || 'Free Period';
+    }
+  });
+  
+  data.notes = document.getElementById('notes').value;
+  data.totalPeriods = document.querySelectorAll('.period-input[value!=""]').length;
+  
+  return data;
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', updatePeriodCount);
+</script>
+</body>
+</html>

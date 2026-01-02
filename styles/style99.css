@@ -1,0 +1,120 @@
+/* Add to your existing CSS */
+.timetable-grid {
+  display: grid;
+  grid-template-columns: 120px repeat(5, 1fr);
+  gap: 1px;
+  background: #e0e0e0;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.grid-header {
+  background: #667eea;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.grid-cell {
+  background: white;
+  padding: 20px 10px;
+  text-align: center;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.grid-cell:hover {
+  background: #f8f9ff;
+  transform: scale(1.02);
+}
+
+.day-label {
+  background: #764ba2;
+  color: white;
+  font-weight: bold;
+  padding: 15px;
+  text-align: center;
+}
+
+.time-slot {
+  background: #f8f9fa;
+  color: #666;
+  font-size: 14px;
+  padding: 10px;
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: 120px repeat(5, 1fr);
+  gap: 1px;
+  background: #e0e0e0;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.input-cell {
+  background: white;
+  padding: 0;
+  margin: 0;
+  border: none;
+  min-height: 80px;
+}
+
+.input-cell input {
+  width: 100%;
+  height: 100%;
+  padding: 15px 10px;
+  border: none;
+  text-align: center;
+  font-size: 14px;
+  background: transparent;
+  transition: background 0.3s ease;
+}
+
+.input-cell input:focus {
+  background: #e6f7ff;
+  outline: none;
+}
+
+.input-cell input::placeholder {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.period-counter {
+  display: inline-block;
+  background: #667eea;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.hours-info {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9ff;
+  border-radius: 10px;
+}
+
+.hour-info {
+  text-align: center;
+  padding: 10px;
+  background: white;
+  border-radius: 5px;
+  border-left: 4px solid #667eea;
+}

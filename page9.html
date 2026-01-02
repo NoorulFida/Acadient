@@ -73,7 +73,7 @@
     const subtitle = document.getElementById("subtitle");
 
     if (!userData) {
-      timetableDiv.innerHTML = '<div class="no-data">📋 No data found. Please go back and select your preferences.</div>';
+      timetableDiv.innerHTML = '<div class="no-data" colspan="4">📋 No data found. Please go back and select your preferences.</div>';
     } else {
       const { department, semester, day } = userData;
       const timetable = timetableData[department]?.[semester];

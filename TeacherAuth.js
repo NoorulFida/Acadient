@@ -1,104 +1,107 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js"
-import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js"
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import {
+    getFirestore,
+    setDoc,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+/* 🔹 Firebase Config */
 const firebaseConfig = {
     apiKey: "AIzaSyCYMh-jojmpS07qjB4hbAE4VRwU0w9zkw0",
     authDomain: "login-form-74d6e.firebaseapp.com",
     projectId: "login-form-74d6e",
     storageBucket: "login-form-74d6e.firebasestorage.app",
     messagingSenderId: "305047532936",
-    appId: "1:305047532936:web:8f7df19681a700f66df63d",
-    measurementId: "G-F3S2GXXENT"
+    appId: "1:305047532936:web:8f7df19681a700f66df63d"
 };
+
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-function showMessage(message, divId) {
-    var messageDiv = document.getElementById(divId);
-    messageDiv.style.display = "block";
-    messageDiv.innerHTML = message;
-    messageDiv.style.opacity = 1;
-    setTimeout(function () {
-        messageDiv.style.opacity = 0;
+/* ================= TOGGLE ================= */
+const regForm = document.getElementById("registrationForm");
+const loginForm = document.getElementById("loginForm");
+const showLogin = document.getElementById("showLogin");
+const showRegister = document.getElementById("showRegister");
 
-    }, 5000);
+showLogin.onclick = () => {
+    regForm.style.display = "none";
+    loginForm.style.display = "block";
+    showLogin.style.display = "none";
+    showRegister.style.display = "inline";
+    document.getElementById("formTitle").innerText = "Teacher Login";
+};
 
+showRegister.onclick = () => {
+    regForm.style.display = "block";
+    loginForm.style.display = "none";
+    showLogin.style.display = "inline";
+    showRegister.style.display = "none";
+    document.getElementById("formTitle").innerText = "Teacher Registration";
+};
 
-}
-const signUp = document.getElementById('submitSignUp')
-signUp.addEventListener('click', (event) => {
-    event.preventDefault();
+/* ================= REGISTER ================= */
+regForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    const email = document.getElementById('rEmail').value;
-    const password = document.getElementById('rPassword').value;
-    const firstName = document.getElementById('fName').value;
-    const lastName = document.getElementById('lName').value;
+    const fullname = document.getElementById("fullname").value;
+    const dept = document.getElementById("dept").value;
+    const subject = document.getElementById("subject").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-    const auth = getAuth();
-    const db = getFirestore();
+    try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const user = cred.user;
 
+        await setDoc(doc(db, "users", user.uid), {
+            fullname,
+            department: dept,
+            subject,
+            email,
+            role: "teacher",   // 🔒 FIXED
+            createdAt: new Date()
+        });
 
-    createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            const user = userCredential.user;
-            const userData = {
-                email: email,
-                firstName: firstName,
-                lastName: lastName
-            };
-            showMessage('Account Created Successfully', 'signUpMessage');
-            const docRef = doc(db, "users", user.uid);
-            setDoc(docRef, userData)
-                .then(() => {
-                    window.location.href = 'index.html';
-                })
-                .catch((error) => {
-                    console.error("error writing documnet", error);
+        localStorage.setItem("loggedInUserId", user.uid);
+        localStorage.setItem("role", "teacher");
 
-                });
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            if (errorCode == 'auth/mail-already-in-use') {
-                showMessage('Email Address Already Exists !!!', 'signUpMessage');
-            }
-            else {
-                showMessage('unable to create user', 'signUpMessage');
-            }
-        })
+        window.location.href = "teacherDashboard.html";
 
-
+    } catch (err) {
+        alert(err.message);
+    }
 });
 
+/* ================= LOGIN ================= */
+loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
 
-const signIn = document.getElementById('submitSignIn');
-signIn.addEventListener('click', (event) => {
-    event.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const auth = getAuth();
+    try {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        const user = cred.user;
 
+        const snap = await getDoc(doc(db, "users", user.uid));
 
+        if (snap.exists() && snap.data().role === "teacher") {
+            localStorage.setItem("loggedInUserId", user.uid);
+            localStorage.setItem("role", "teacher");
+            window.location.href = "teacherDashboard.html";
+        } else {
+            alert("Not a teacher account");
+        }
 
-    signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            showMessage('login is successful', 'signInMessage');
-            const user = userCredential.user;
-            localStorage.setItem('loggedInUserId', user.uid);
-
-            window.location.href = 'homepage.html';
-
-
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            if (errorCode === 'auth/invalid-credential') {
-                showMessage('Incorrect Email or Password', 'SignInMesaage');
-            }
-            else {
-                showMessage('Account does not Exist', 'signInMesaage')
-            }
-
-        })
- })       
-
+    } catch (err) {
+        alert("Invalid login details");
+    }
+});

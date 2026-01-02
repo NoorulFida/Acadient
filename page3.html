@@ -1,102 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TimeTrack | Teacher Registration</title>
-     <link rel="stylesheet" href="styles/style3.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TimeTrack | Teacher Auth</title>
+<link rel="stylesheet" href="styles/style3.css">
 </head>
+
 <body>
-    <div class="form-container">
-        <div class="header">
-            <div class="logo-icon">👩‍🏫</div>
-            <h2>Teacher Registration</h2>
-            <p class="subtitle">Create your account to get started</p>
-        </div>
+<div class="form-container">
 
-        <form id="registrationForm">
-            <div class="form-group">
-                <label for="fullname">Full Name</label>
-                <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
-            </div>
+  <div class="header">
+    <div class="logo-icon">👩‍🏫</div>
+    <h2 id="formTitle">Teacher Registration</h2>
+    <p class="subtitle" id="formSubtitle">Create your account to get started</p>
+  </div>
 
-            <div class="form-group">
-                <label for="dept">Department</label>
-                <select id="dept" name="dept" required>
-                    <option value="">Select Department</option>
-                    <option value="Bsc Computer Science">BSc Computer Science</option>
-                    <option value="Bvoc (Accountancy)" disabled>BVoc (Accountancy)</option>
-                    <option value="Bsc Biotechnology" disabled>BSc Biotechnology</option>
-                    <option value="Bsc Biochemistry" disabled>BSc Biochemistry</option>
-                    <option value="Bsc Double Main" disabled>BSc Double Main</option>
-                    <option value="BA English" disabled>BA English</option>
-                    <option value="BA Economics" disabled>BA Economics</option>
-                    <option value="BA West Asia" disabled>BA West Asia</option>
-                    <option value="Bsc Microbiology" disabled>BSc Microbiology</option>
-                    <option value="Bcom (CA)" disabled>BCom (CA)</option>
-                    <option value="Bcom (Cooperation)" disabled>BCom (Cooperation)</option>
-                    <option value="BBA" disabled>BBA</option>
-                    <option value="Bvoc (Logistics)" disabled>BVoc (Logistics)</option>
-                </select>
-            </div>
+  <!-- ================= REGISTER FORM ================= -->
+  <form id="registrationForm">
 
-            <div class="form-group">
-                <label for="subject">Subject</label>
-                <input type="text" id="subject" name="subject" placeholder="Enter your subject" required>
-            </div>
+    <label>Full Name</label>
+    <input type="text" id="fullname" required>
 
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
-            </div>
+    <label>Department</label>
+    <select id="dept" required>
+      <option value="">Select Department</option>
+      <option value="Bsc Computer Science">BSc Computer Science</option>
+    </select>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Create a password" required>
-            </div>
+    <label>Subject</label>
+    <input type="text" id="subject" required>
 
-            <button type="submit">Create Account →</button>
-        </form>
+    <label>Email</label>
+    <input type="email" id="email" required>
 
-        <div class="back-link">
-            <a href="page2.html">← Back to Login</a>
-        </div>
-    </div>
+    <label>Password</label>
+    <input type="password" id="password" required>
 
+    <button type="submit">Create Account →</button>
+  </form>
 
-      <!-- ✅ BACKEND CONNECTION SCRIPT -->
-    <script>
-        const form = document.getElementById("registrationForm");
+  <!-- ================= LOGIN FORM ================= -->
+  <form id="loginForm" style="display:none">
 
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
+    <label>Email</label>
+    <input type="email" id="loginEmail" required>
 
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+    <label>Password</label>
+    <input type="password" id="loginPassword" required>
 
-            try {
-                const response = await fetch("http://localhost:3000/api/teachers/register", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                });
+    <button type="submit">Login →</button>
+  </form>
 
-                const result = await response.json();
+  <!-- ================= TOGGLE LINKS ================= -->
+  <p style="text-align:center; margin-top:10px;">
+    <span id="showLogin" style="color:blue; cursor:pointer;">
+      Already have an account? Login
+    </span>
+    <span id="showRegister" style="color:blue; cursor:pointer; display:none;">
+      New teacher? Register
+    </span>
+  </p>
 
-                if (response.ok) {
-                    alert("Registration successful!");
-                    window.location.href = "page4.html";
-                } else {
-                    alert(result.message || "Registration failed");
-                }
+</div>
 
-            } catch (error) {
-                alert("Server error. Please try again later.");
-                console.error(error);
-            }
-        });
-    </script>
+<!-- ONLY ONE SCRIPT -->
+<script type="module" src="js/teacherAuth.js"></script>
 </body>
 </html>

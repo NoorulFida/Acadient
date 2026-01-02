@@ -7,19 +7,20 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            min-height: 100vh;
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 30px 20px;
             position: relative;
             overflow-x: hidden;
         }
 
         body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: -50%;
             right: -20%;
             width: 600px;
@@ -27,11 +28,12 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             animation: float 20s infinite ease-in-out;
+            pointer-events: none;
         }
 
         body::after {
             content: '';
-            position: absolute;
+            position: fixed;
             bottom: -30%;
             left: -10%;
             width: 400px;
@@ -39,6 +41,7 @@
             background: rgba(255, 255, 255, 0.08);
             border-radius: 50%;
             animation: float 15s infinite ease-in-out reverse;
+            pointer-events: none;
         }
 
         @keyframes float {
@@ -47,7 +50,7 @@
             66% { transform: translate(-20px, 20px) rotate(240deg); }
         }
 
-        .container {
+        .form-container {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -71,7 +74,7 @@
             }
         }
 
-        .header {
+        .page-header {
             text-align: center;
             margin-bottom: 35px;
         }
@@ -90,12 +93,12 @@
             box-shadow: 0 8px 20px rgba(44, 83, 100, 0.3);
         }
 
-        h1 {
+        h2 {
             color: #2d3748;
-            margin-bottom: 8px;
             font-size: 28px;
             font-weight: 700;
             letter-spacing: -0.5px;
+            margin-bottom: 8px;
         }
 
         .subtitle {
@@ -104,42 +107,9 @@
             font-weight: 500;
         }
 
-        .login-buttons {
+        form {
             display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
-            padding-bottom: 30px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .login-btn {
-            flex: 1;
-            padding: 12px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: white;
-            color: #2d3748;
-        }
-
-        .login-btn:hover {
-            background: linear-gradient(135deg, #2c5364 0%, #203a43 100%);
-            color: white;
-            border-color: #2c5364;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(44, 83, 100, 0.25);
-        }
-
-        .form-group {
-            margin-bottom: 24px;
+            flex-direction: column;
         }
 
         label {
@@ -148,8 +118,12 @@
             color: #2d3748;
             font-weight: 600;
             font-size: 14px;
+            text-transform: capitalize;
         }
 
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
         select {
             width: 100%;
             padding: 12px 14px;
@@ -158,26 +132,47 @@
             font-size: 14px;
             color: #2d3748;
             background-color: white;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            font-family: inherit;
             font-weight: 500;
         }
 
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
         select:focus {
             outline: none;
             border-color: #2c5364;
             box-shadow: 0 0 0 3px rgba(44, 83, 100, 0.1);
         }
 
+        input[type="text"]:hover,
+        input[type="email"]:hover,
+        input[type="password"]:hover,
         select:hover {
             border-color: #cbd5e0;
         }
 
-        select option:disabled {
-            color: #cbd5e0;
+        input::placeholder {
+            color: #a0aec0;
+            font-weight: 400;
         }
 
-        .submit-btn {
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232d3748' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        select option:disabled {
+            color: #a0aec0;
+        }
+
+        button[type="submit"] {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, #2c5364 0%, #203a43 100%);
@@ -189,12 +184,13 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
+            text-transform: capitalize;
             box-shadow: 0 10px 30px rgba(44, 83, 100, 0.3);
             position: relative;
             overflow: hidden;
         }
 
-        .submit-btn::before {
+        button[type="submit"]::before {
             content: '';
             position: absolute;
             top: 0;
@@ -205,61 +201,26 @@
             transition: left 0.5s;
         }
 
-        .submit-btn:hover::before {
+        button[type="submit"]:hover::before {
             left: 100%;
         }
 
-        .submit-btn:hover {
+        button[type="submit"]:hover {
             transform: translateY(-2px);
             box-shadow: 0 15px 40px rgba(44, 83, 100, 0.4);
         }
 
-        .submit-btn:active {
+        button[type="submit"]:active {
             transform: translateY(0);
         }
 
-        .info-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: #f7fafc;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #718096;
-            font-weight: 500;
-            margin-left: 8px;
-        }
-
         @media (max-width: 768px) {
-            .container {
-                padding: 35px 30px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-
-            .subtitle {
-                font-size: 14px;
-            }
-
-            .login-buttons {
-                flex-direction: column;
-            }
-
-            .login-btn {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
             body {
-                padding: 15px;
+                padding: 20px 15px;
             }
 
-            .container {
-                padding: 30px 20px;
+            .form-container {
+                padding: 35px 25px;
             }
 
             .logo-icon {
@@ -268,7 +229,38 @@
                 font-size: 25px;
             }
 
-            h1 {
+            h2 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            select {
+                margin-bottom: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 22px;
+            }
+
+            h2 {
                 font-size: 22px;
             }
 
@@ -276,20 +268,24 @@
                 font-size: 13px;
             }
 
-            .form-group {
-                margin-bottom: 20px;
+            .page-header {
+                margin-bottom: 30px;
             }
 
-            label {
-                font-size: 13px;
-            }
-
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
             select {
                 padding: 11px 12px;
                 font-size: 13px;
+                margin-bottom: 16px;
             }
 
-            .submit-btn {
+            select {
+                background-position: right 12px center;
+            }
+
+            button[type="submit"] {
                 padding: 13px;
                 font-size: 15px;
             }

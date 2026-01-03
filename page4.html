@@ -6,8 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TimeTrack | Teacher Dashboard</title>
     <link rel="stylesheet" href="styles/style4.css">
+    <style>
+        /* Attendance circle colors */
+        .circle.present {
+            background-color: #4CAF50; /* green */
+            color: white;
+        }
 
-
+        .circle.absent {
+            background-color: #f44336; /* red */
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -19,7 +29,6 @@
         <div class="icon" data-section="notifications">🔔</div>
         <div class="icon" data-section="reports">📋</div>
         <div class="icon" data-section="timetable">📅</div>
-
     </div>
 
     <!-- ---------- CONTENT ---------- -->
@@ -28,13 +37,12 @@
         <!-- HOME -->
         <div id="home" class="section active">
             <h2>Available Hours</h2>
-
             <div class="circle-container">
-                <div class="circle">1</div>
-                <div class="circle">2</div>
-                <div class="circle">3</div>
-                <div class="circle">4</div>
-                <div class="circle">5</div>
+                <div class="circle" data-hour="1">1</div>
+                <div class="circle" data-hour="2">2</div>
+                <div class="circle" data-hour="3">3</div>
+                <div class="circle" data-hour="4">4</div>
+                <div class="circle" data-hour="5">5</div>
             </div>
 
             <div class="box">
@@ -51,7 +59,6 @@
         <!-- NOTIFICATIONS -->
         <div id="notifications" class="section">
             <h2>Notifications</h2>
-
             <div class="box">
                 <div class="notification-item">
                     <p>📝 Assignment submission tomorrow</p>
@@ -68,7 +75,6 @@
         <!-- REPORTS -->
         <div id="reports" class="section">
             <h2>Reports</h2>
-
             <div class="box">
                 <div class="report-item">
                     <p>📊 Attendance Report</p>
@@ -82,9 +88,9 @@
             </div>
         </div>
 
+        <!-- TIMETABLE -->
         <div id="timetable" class="section">
             <h2>Timetable</h2>
-
             <div class="box">
                 <button onclick="location.href='create-timetable.html'">
                     ➕ Create / Edit Timetable
@@ -92,16 +98,14 @@
             </div>
         </div>
 
-
     </div>
 
     <!-- ---------- SCRIPT ---------- -->
     <script>
-
-
+        // Sidebar section switch
         const icons = document.querySelectorAll(".icon");
         const sections = document.querySelectorAll(".section");
-        // Sidebar section switch
+
         icons.forEach(icon => {
             icon.addEventListener("click", () => {
                 icons.forEach(i => i.classList.remove("active"));
@@ -111,57 +115,6 @@
                 document.getElementById(icon.dataset.section).classList.add("active");
             });
         });
-        /* ---------- LOAD AVAILABLE HOURS ---------- */
-        function loadHours() {
-            fetch("http://localhost:3000/api/teachers/hours", {
-                headers: {
-                    Authorization: "Bearer " + token
-                }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    const container = document.querySelector(".circle-container");
-                    container.innerHTML = "";
-
-                    data.hours.forEach(hour => {
-                        const div = document.createElement("div");
-                        div.className = "circle";
-                        div.innerText = hour;
-                        container.appendChild(div);
-                    });
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("Failed to load hours");
-                });
-        }
-        /* ---------- LOAD NOTIFICATIONS ---------- */
-        function loadNotifications() {
-            fetch("http://localhost:3000/api/notifications", {
-                headers: {
-                    Authorization: "Bearer " + token
-                }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    const box = document.querySelector("#notifications .box");
-                    box.innerHTML = "";
-
-                    data.forEach(note => {
-                        const div = document.createElement("div");
-                        div.className = "notification-item";
-                        div.innerHTML = `<p>🔔 ${note.message}</p>`;
-                        box.appendChild(div);
-                    });
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("Failed to load notifications");
-                });
-        }
-
-
-
 
         // Dropdown redirect
         function goToPage(value) {
@@ -173,10 +126,29 @@
                 window.location.href = "page7.html";
             }
         }
-        // Load data on page load
-        loadHours();
-        loadNotifications();
 
+        // ---------- Fixed Attendance Feature ----------
+        const circles = document.querySelectorAll(".circle");
+
+        circles.forEach(circle => {
+            let clickCount = 0;
+
+            circle.addEventListener("click", () => {
+                clickCount++;
+                setTimeout(() => {
+                    if (clickCount === 1) {
+                        // Single click → Present
+                        circle.classList.remove("absent");
+                        circle.classList.add("present");
+                    } else if (clickCount === 2) {
+                        // Double click → Absent
+                        circle.classList.remove("present");
+                        circle.classList.add("absent");
+                    }
+                    clickCount = 0; // reset counter
+                }, 300); // wait 300ms to detect double click
+            });
+        });
     </script>
 
 </body>

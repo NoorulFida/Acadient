@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acadient | Admin Login</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .box {
+      background: #ffffff;
+      padding: 30px;
+      width: 300px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background: #4a6cf7;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    button:hover {
+      background: #3b5be0;
+    }
+
+    #msg {
+      margin-top: 10px;
+      text-align: center;
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+    <h2>Admin Login</h2>
+
+    <input
+      id="username"
+      type="email"
+      placeholder="Admin Email"
+      required
+    />
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+      required
+    />
+
+    <button onclick="adminLogin()">Login</button>
+
+    <p id="msg"></p>
+  </div>
+
+  <!-- Firebase Admin Logic -->
+  <script type="module" src="admin.js"></script>
+
+</body>
+</html>

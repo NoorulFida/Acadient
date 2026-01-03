@@ -9,7 +9,7 @@ import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/fireb
 /* 🔹 Firebase Config */
 const firebaseConfig = {
     apiKey: "AIzaSyCYMh-jojmpS07qjB4hbAE4VRwU0w9zkw0",
-    authDomain: "login-form-74d6e.firebaseapp.com",
+    authDomain: "AIzaSyCYMh-jojmpS07qjB4hbAE4VRwU0w9zkw0",
     projectId: "login-form-74d6e",
     storageBucket: "login-form-74d6e.firebasestorage.app",
     messagingSenderId: "305047532936",

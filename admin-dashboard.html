@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Acadient | Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2, h3 {
+      text-align: center;
+    }
+
+    /* ===== MAIN TABS ===== */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tabs button,
+    .sub-tabs button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #ddd;
+    }
+
+    .tabs button.active,
+    .sub-tabs button.active {
+      background: #4a6cf7;
+      color: white;
+    }
+
+    .section {
+      max-width: 1100px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .sub-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #4a6cf7;
+      color: white;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 6px;
+      margin-bottom: 8px;
+    }
+
+    button.action {
+      padding: 6px 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>Admin Dashboard</h2>
+
+<!-- ===== MAIN TABS ===== -->
+<div class="tabs">
+  <button id="tabTeachers" class="active" onclick="showTeachers()">Handle Teachers</button>
+  <button id="tabTimetable" onclick="showTimetable()">Handle Timetable</button>
+</div>
+
+<!-- ================= TEACHERS ================= -->
+<div class="section" id="teachersSection" style="display:block;">
+  <h3>Teachers Management</h3>
+  <div id="teachersTable"></div>
+</div>
+
+<!-- ================= TIMETABLE ================= -->
+<div class="section" id="timetableSection">
+
+  <h3>Timetable Management</h3>
+
+  <!-- ===== SUB TABS ===== -->
+  <div class="sub-tabs">
+    <button id="btnList" class="active" onclick="showList()">List Timetables</button>
+    <button id="btnSearch" onclick="showSearch()">Search Timetable</button>
+  </div>
+
+  <!-- ===== LIST TIMETABLES ===== -->
+  <div id="listSection">
+    <table>
+      <thead>
+        <tr>
+          <th>Department</th>
+          <th>Semester</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="timetableList">
+        <!-- Filled by admin.js -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== SEARCH / VIEW TIMETABLE ===== -->
+  <div id="searchSection" style="display:none;">
+
+    <label>Department</label>
+    <select id="Department">
+      <option value="">Select</option>
+      <option value="BSc Computer Science">BSc Computer Science</option>
+      <option value="BSc Biotechnology">BSc Biotechnology</option>
+      <option value="BA English">BA English</option>
+    </select>
+
+    <label>Semester</label>
+    <select id="Semester">
+      <option value="">Select</option>
+      <option value="1">Semester 1</option>
+      <option value="2">Semester 2</option>
+      <option value="3">Semester 3</option>
+      <option value="4">Semester 4</option>
+      <option value="5">Semester 5</option>
+    </select>
+
+    <button onclick="loadTimetable()">Load Timetable</button>
+
+    <table id="timetableGrid">
+      <tr>
+        <th>Day / Period</th>
+        <th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th>
+      </tr>
+    </table>
+
+    <br>
+    <button onclick="saveTimetable()">Save / Update</button>
+  </div>
+
+</div>
+
+<script type="module" src="admin.js"></script>
+
+<script>
+  /* ===== MAIN TABS ===== */
+  function showTeachers() {
+    teachersSection.style.display = "block";
+    timetableSection.style.display = "none";
+    tabTeachers.classList.add("active");
+    tabTimetable.classList.remove("active");
+  }
+
+  function showTimetable() {
+    teachersSection.style.display = "none";
+    timetableSection.style.display = "block";
+    tabTimetable.classList.add("active");
+    tabTeachers.classList.remove("active");
+  }
+
+  /* ===== SUB TABS ===== */
+  function showList() {
+    listSection.style.display = "block";
+    searchSection.style.display = "none";
+    btnList.classList.add("active");
+    btnSearch.classList.remove("active");
+  }
+
+  function showSearch() {
+    listSection.style.display = "none";
+    searchSection.style.display = "block";
+    btnSearch.classList.add("active");
+    btnList.classList.remove("active");
+  }
+</script>
+
+</body>
+</html>

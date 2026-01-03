@@ -66,14 +66,16 @@ regForm.addEventListener("submit", async (e) => {
             department: dept,
             subject,
             email,
-            role: "teacher",   // 🔒 FIXED
+            role: "teacher",
+            verified: false,
             createdAt: new Date()
         });
 
         localStorage.setItem("loggedInUserId", user.uid);
         localStorage.setItem("role", "teacher");
 
-        window.location.href = "teacherDashboard.html";
+        // ✅ Redirect after successful registration
+        window.location.href = "page4.html";
 
     } catch (err) {
         alert(err.message);
@@ -96,7 +98,9 @@ loginForm.addEventListener("submit", async (e) => {
         if (snap.exists() && snap.data().role === "teacher") {
             localStorage.setItem("loggedInUserId", user.uid);
             localStorage.setItem("role", "teacher");
-            window.location.href = "teacherDashboard.html";
+
+            // ✅ Redirect after successful login
+            window.location.href = "page4.html";
         } else {
             alert("Not a teacher account");
         }

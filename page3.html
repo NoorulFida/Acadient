@@ -1,75 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TimeTrack | Teacher Auth</title>
-<link rel="stylesheet" href="styles/style3.css">
+  <meta charset="UTF-8">
+  <title>Teacher Auth</title>
+  <link rel="stylesheet" href="styles/style3.css">
 </head>
 
 <body>
+
 <div class="form-container">
 
-  <div class="header">
-    <div class="logo-icon">👩‍🏫</div>
-    <h2 id="formTitle">Teacher Registration</h2>
-    <p class="subtitle" id="formSubtitle">Create your account to get started</p>
-  </div>
+  <h2>Teacher Registration</h2>
 
-  <!-- ================= REGISTER FORM ================= -->
   <form id="registrationForm">
+    <input type="text" id="fullname" placeholder="Full Name" required>
 
-    <label>Full Name</label>
-    <input type="text" id="fullname" required>
-
-    <label>Department</label>
     <select id="dept" required>
       <option value="">Select Department</option>
-      <option value="Bsc Computer Science">BSc Computer Science</option>
+      <option value="BSc Computer Science">BSc Computer Science</option>
+      <option value="BSc Biotechnology">BSc Biotechnology</option>
+      <option value="BA English">BA English</option>
     </select>
 
-    <label>Subject</label>
-    <input type="text" id="subject" required>
+    <select id="subject" required>
+      <option value="">Select Subject</option>
+      <option value="Maths">Maths</option>
+      <option value="Physics">Physics</option>
+      <option value="Chemistry">Chemistry</option>
+      <option value="Biology">Biology</option>
+      <option value="English">English</option>
+      <option value="Computer Science">Computer Science</option>
+    </select>
 
-    <label>Email</label>
-    <input type="email" id="email" required>
-
-    <label>Password</label>
-    <input type="password" id="password" required>
-
-    <button type="submit">Create Account →</button>
-    
+    <input type="email" id="email" placeholder="Email" required>
+    <button type="submit">Register</button>
   </form>
 
-  <!-- ================= LOGIN FORM ================= -->
-  <form id="loginForm" style="display:none">
+  <hr>
 
-    <label>Email</label>
-    <input type="email" id="loginEmail" required>
+  <h2>Teacher Login</h2>
 
-    <label>Password</label>
-    <input type="password" id="loginPassword" required>
-
-    <button type="submit">Login →</button>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <button type="submit">Login</button>
   </form>
-
-  <!-- ================= TOGGLE LINKS ================= -->
-  <p style="text-align:center; margin-top:10px;">
-    <span id="showLogin" style="color:blue; cursor:pointer;">
-      Already have an account? Login
-    </span>
-    <span id="showRegister" style="color:blue; cursor:pointer; display:none;">
-      New teacher? Register
-    </span>
-  </p>
 
 </div>
 
-<!-- ONLY ONE SCRIPT -->
-<script type="module" src="teacherAuth.js">
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    query,
+    where,
+    getDocs
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyCYMh-jojmpS07qjB4hbAE4VRwU0w9zkw0",
+    authDomain: "login-form-74d6e.firebaseapp.com",
+    projectId: "login-form-74d6e"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const registrationForm = document.getElementById("registrationForm");
+  const loginForm = document.getElementById("loginForm");
+
+  // ================= REGISTER =================
+  registrationForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    try {
+      await addDoc(collection(db, "users"), {
+        name: fullname.value.trim(),
+        email: email.value.trim(),
+        department: dept.value,
+        subject: subject.value,
+        role: "teacher",
+        verified: false
+      });
+
+      alert("Registered successfully.\nPlease wait for admin verification.");
+      registrationForm.reset();
+
+    } catch (err) {
+      alert("Registration failed");
+      console.error(err);
+    }
+  });
+
+  // ================= LOGIN =================
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    try {
+      const q = query(
+        collection(db, "users"),
+        where("email", "==", loginEmail.value.trim()),
+        where("role", "==", "teacher")
+      );
+
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        alert("No teacher account found");
+        return;
+      }
+
+      const user = snap.docs[0].data();
+
+      if (!user.verified) {
+        alert("Admin has not verified your account yet");
+        return;
+      }
+
+      // ✅ CLEAR OLD SESSION
+      sessionStorage.clear();
+
+      // ✅ SAVE SESSION
+      sessionStorage.setItem("teacherEmail", user.email);
+      sessionStorage.setItem("teacherDept", user.department);
+      sessionStorage.setItem("teacherSubject", user.subject);
+
+      alert("Login successful");
+      window.location.href = "page4.html";
+
+    } catch (err) {
+      alert("Login failed");
+      console.error(err);
+    }
+  });
 </script>
-
 
 </body>
 </html>

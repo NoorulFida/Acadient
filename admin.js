@@ -1,25 +1,26 @@
-// ================= FIREBASE =================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import {
-  getFirestore, collection, query, where, getDocs,
-  updateDoc, doc, setDoc, getDoc
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  doc,
+  setDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCYMh-jojmpS07qjB4hbAE4VRwU0w9zkw0",
   authDomain: "login-form-74d6e.firebaseapp.com",
-  projectId: "login-form-74d6e",
-  storageBucket: "login-form-74d6e.appspot.com",
-  messagingSenderId: "305047532936",
-  appId: "1:305047532936:web:8f7df19681a700f66df63d"
+  projectId: "login-form-74d6e"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// =================================================
-// ================= TEACHERS ======================
-// =================================================
+/* ================= TEACHERS ================= */
 async function loadTeachers() {
   const q = query(collection(db, "users"), where("role", "==", "teacher"));
   const snap = await getDocs(q);
@@ -27,11 +28,17 @@ async function loadTeachers() {
   const div = document.getElementById("teachersTable");
   div.innerHTML = "";
 
+  if (snap.empty) {
+    div.innerHTML = "<p style='text-align:center;'>No teachers found</p>";
+    return;
+  }
+
   const table = document.createElement("table");
   table.innerHTML = `
     <tr>
       <th>Name</th>
       <th>Email</th>
+      <th>Department</th>
       <th>Status</th>
       <th>Action</th>
     </tr>
@@ -41,175 +48,98 @@ async function loadTeachers() {
     const t = d.data();
     const verified = t.verified === true;
 
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${t.name || ""}</td>
-      <td>${t.email || ""}</td>
-      <td>${verified ? "Verified" : "Not Verified"}</td>
-      <td>
-        <button onclick="toggleVerify('${d.id}', ${verified})">
-          ${verified ? "Unverify" : "Verify"}
-        </button>
-      </td>
+    table.innerHTML += `
+      <tr>
+        <td>${t.name || ""}</td>
+        <td>${t.email || ""}</td>
+        <td>${t.department || ""}</td>
+        <td>${verified ? "Verified" : "Not Verified"}</td>
+        <td>
+          <button class="action" onclick="toggleVerify('${d.id}', ${verified})">
+            ${verified ? "Unverify" : "Verify"}
+          </button>
+        </td>
+      </tr>
     `;
-    table.appendChild(row);
   });
 
   div.appendChild(table);
 }
 
-window.toggleVerify = async (uid, status) => {
-  await updateDoc(doc(db, "users", uid), { verified: !status });
+window.toggleVerify = async (id, status) => {
+  await updateDoc(doc(db, "users", id), { verified: !status });
   loadTeachers();
 };
 
 loadTeachers();
 
-// =================================================
-// ================= TIMETABLE =====================
-// =================================================
+/* ================= TIMETABLE ================= */
+const days = ["Monday","Tuesday","Wednesday","Thursday","Friday"];
 
-const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-
-function buildEmptyGrid() {
+function buildGrid() {
   const table = document.getElementById("timetableGrid");
   table.innerHTML = `
     <tr>
-      <th>Day / Period</th>
-      <th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th>
+      <th>Day / Hour</th>
+      <th>H1</th><th>H2</th><th>H3</th><th>H4</th><th>H5</th>
     </tr>
   `;
 
   days.forEach(day => {
-    const row = document.createElement("tr");
-    row.innerHTML = `<th>${day}</th>`;
-
+    let row = `<tr><th>${day}</th>`;
     for (let i = 1; i <= 5; i++) {
-      row.innerHTML += `
-        <td>
-          <input placeholder="Subject"><br>
-       
-        </td>
-      `;
+      row += `<td><input></td>`;
     }
-    table.appendChild(row);
+    row += "</tr>";
+    table.innerHTML += row;
   });
 }
 
-//   <select>
-//   <option value="class">Class</option>
-//   <option value="free">Free</option>
-//   <option value="exam">Exam</option>
-//   <option value="seminar">Seminar</option>
-//   <option value="assignment">Assignment</option>
-// </select>
-
-buildEmptyGrid();
+buildGrid();
 
 window.loadTimetable = async () => {
-  buildEmptyGrid();
+  buildGrid();
 
   const dept = Department.value;
   const sem = Semester.value;
-  if (!dept || !sem) return alert("Select Department & Semester");
+  if (!dept || !sem) return;
 
-  const ref = doc(db, "timetables", dept.replace(/\s+/g, "_"), "semesters", `sem_${sem}`);
+  const ref = doc(db, "timetables", dept.replace(/\s+/g,"_"), "semesters", `sem_${sem}`);
   const snap = await getDoc(ref);
   if (!snap.exists()) return;
 
   const data = snap.data();
-  const table = timetableGrid;
+  const table = document.getElementById("timetableGrid");
 
   for (let i = 1; i < table.rows.length; i++) {
     const day = table.rows[i].cells[0].innerText.toLowerCase();
     for (let j = 1; j <= 5; j++) {
-      const cell = table.rows[i].cells[j];
-      cell.children[0].value = data[day][j].subject;
-      // cell.children[2].value = data[day][j].availability;
+      table.rows[i].cells[j].children[0].value =
+        data[day]?.[`P${j}`]?.subject || "";
     }
   }
-};a
+};
 
 window.saveTimetable = async () => {
   const dept = Department.value;
   const sem = Semester.value;
   if (!dept || !sem) return alert("Select Department & Semester");
 
+  const table = document.getElementById("timetableGrid");
   const data = {};
-  const table = timetableGrid;
 
   for (let i = 1; i < table.rows.length; i++) {
     const day = table.rows[i].cells[0].innerText.toLowerCase();
     data[day] = {};
     for (let j = 1; j <= 5; j++) {
-      const cell = table.rows[i].cells[j];
-      data[day][j] = {
-        subject: cell.children[0].value,
-        availability: 'dont_know', // available , not_available
-        // availability: cell.children[2].value,
-        assignments: [],
-        seminars: [],
-        exams: []
+      data[day][`P${j}`] = {
+        subject: table.rows[i].cells[j].children[0].value,
+        availability: "available"
       };
     }
   }
 
-  const ref = doc(db, "timetables", dept.replace(/\s+/g, "_"), "semesters", `sem_${sem}`);
+  const ref = doc(db, "timetables", dept.replace(/\s+/g,"_"), "semesters", `sem_${sem}`);
   await setDoc(ref, data);
-  alert("Timetable Saved ✅");
+  alert("Timetable Saved");
 };
-
-
-// =================================================
-// =============== LIST TIMETABLES =================
-// =================================================
-
-window.loadTimetableList = async function () {
-  const tbody = document.getElementById("timetableList");
-  tbody.innerHTML = "";
-
-  const deptSnap = await getDocs(collection(db, "timetables"));
-
-  deptSnap.forEach(async deptDoc => {
-    const deptId = deptDoc.id;
-
-    const semSnap = await getDocs(
-      collection(db, "timetables", deptId, "semesters")
-    );
-
-    semSnap.forEach(semDoc => {
-      const sem = semDoc.id.replace("sem_", "");
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${deptId.replace(/_/g, " ")}</td>
-        <td>${sem}</td>
-        <td>
-          <button onclick="viewTimetable('${deptId}', '${sem}')">
-            View
-          </button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-  });
-};
-window.viewTimetable = async (deptId, sem) => {
-  // switch UI
-  document.getElementById("listSection").style.display = "none";
-  document.getElementById("searchSection").style.display = "block";
-
-  btnSearch.classList.add("active");
-  btnList.classList.remove("active");
-
-  // set dropdowns
-  Department.value = deptId.replace(/_/g, " ");
-  Semester.value = sem;
-
-  // load timetable data
-  await loadTimetable();
-};
-
-
-
-

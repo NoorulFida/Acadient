@@ -1,159 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TimeTrack | Teacher Dashboard</title>
-    <link rel="stylesheet" href="styles/style4.css">
-    <style>
-        /* Attendance circle colors */
-        .circle.present {
-            background-color: #4CAF50; /* green */
-            color: white;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimeTrack | Teacher Dashboard</title>
+  <link rel="stylesheet" href="styles/style4.css">
 
-        .circle.absent {
-            background-color: #f44336; /* red */
-            color: white;
-        }
-    </style>
+  <style>
+    .circle.present { background:#4CAF50; color:#fff; }
+    .circle.absent { background:#f44336; color:#fff; }
+
+    .today-line {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 15px 0;
+      color: #203a43;
+    }
+
+    .save-btn {
+      margin: 20px auto;
+      padding: 12px 25px;
+      background:#203a43;
+      color:white;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+    }
+  </style>
 </head>
 
 <body>
 
-    <!-- ---------- SIDEBAR ---------- -->
-    <div class="sidebar">
-    
-            <button class="arrow" onclick="location.href='page3.html'">← Back</button> 
-   
-        <div class="icon active" data-section="home">🏠</div>
-        <div class="icon" data-section="notifications">🔔</div>
-        <div class="icon" data-section="reports">📋</div>
-        <div class="icon" data-section="timetable">📅</div>
+<div class="sidebar">
+  <button class="arrow" onclick="location.href='page3.html'">← Back</button>
+  <div class="icon active">🏠</div>
+  <div class="icon">🔔</div>
+  <div class="icon">📋</div>
+  <div class="icon">📅</div>
+</div>
+
+<div class="content">
+  <div id="home" class="section active">
+
+    <div class="today-line" id="todayLine"></div>
+
+    <h2>Available Hours</h2>
+
+    <div class="circle-container">
+      <div class="circle" data-hour="1">1</div>
+      <div class="circle" data-hour="2">2</div>
+      <div class="circle" data-hour="3">3</div>
+      <div class="circle" data-hour="4">4</div>
+      <div class="circle" data-hour="5">5</div>
     </div>
 
-    <!-- ---------- CONTENT ---------- -->
-    <div class="content">
+    <button class="save-btn" id="saveAttendanceBtn">Save Attendance</button>
 
-        <!-- HOME -->
-        <div id="home" class="section active">
-            <h2>Available Hours</h2>
-            <div class="circle-container">
-                <div class="circle" data-hour="1">1</div>
-                <div class="circle" data-hour="2">2</div>
-                <div class="circle" data-hour="3">3</div>
-                <div class="circle" data-hour="4">4</div>
-                <div class="circle" data-hour="5">5</div>
-            </div>
+  </div>
+</div>
 
-            <div class="box">
-                <label>Academic Updates</label>
-                <select onchange="goToPage(this.value)">
-                    <option value="">Select an option</option>
-                    <option value="assignment">Assignment</option>
-                    <option value="seminar">Seminar</option>
-                    <option value="exam">Exam</option>
-                </select>
-            </div>
-        </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-        <!-- NOTIFICATIONS -->
-        <div id="notifications" class="section">
-            <h2>Notifications</h2>
-            <div class="box">
-                <div class="notification-item">
-                    <p>📝 Assignment submission tomorrow</p>
-                </div>
-                <div class="notification-item">
-                    <p>🎤 Seminar scheduled on Friday</p>
-                </div>
-                <div class="notification-item">
-                    <p>📊 Exam timetable released</p>
-                </div>
-            </div>
-        </div>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCYMh-jojmpS07qjB4hbAE4VRwU0w9zkw0",
+    authDomain: "login-form-74d6e.firebaseapp.com",
+    projectId: "login-form-74d6e"
+  };
 
-        <!-- REPORTS -->
-        <div id="reports" class="section">
-            <h2>Reports</h2>
-            <div class="box">
-                <div class="report-item">
-                    <p>📊 Attendance Report</p>
-                </div>
-                <div class="report-item">
-                    <p>📈 Student Performance</p>
-                </div>
-                <div class="report-item">
-                    <p>📉 Exam Analysis</p>
-                </div>
-            </div>
-        </div>
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-        <!-- TIMETABLE -->
-        <div id="timetable" class="section">
-            <h2>Timetable</h2>
-            <div class="box">
-                <button onclick="location.href='create-timetable.html'">
-                    ➕ Create / Edit Timetable
-                </button>
-            </div>
-        </div>
+  // ✅ FULL SESSION CHECK
+  const teacherEmail = sessionStorage.getItem("teacherEmail");
+  const teacherDept = sessionStorage.getItem("teacherDept");
+  const teacherSubject = sessionStorage.getItem("teacherSubject");
 
-    </div>
+  if (!teacherEmail || !teacherDept || !teacherSubject) {
+    alert("Teacher session not found. Please login again.");
+    sessionStorage.clear();
+    window.location.href = "page3.html";
+  }
 
-    <!-- ---------- SCRIPT ---------- -->
-    <script>
-        // Sidebar section switch
-        const icons = document.querySelectorAll(".icon");
-        const sections = document.querySelectorAll(".section");
+  // ✅ TODAY
+  const todayObj = new Date();
+  const todayKey = todayObj.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
 
-        icons.forEach(icon => {
-            icon.addEventListener("click", () => {
-                icons.forEach(i => i.classList.remove("active"));
-                icon.classList.add("active");
+  document.getElementById("todayLine").innerText =
+    "Today : " + todayObj.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
 
-                sections.forEach(sec => sec.classList.remove("active"));
-                document.getElementById(icon.dataset.section).classList.add("active");
-            });
-        });
+  // ✅ CIRCLES
+  const circles = document.querySelectorAll(".circle");
+  circles.forEach(circle => {
+    circle.addEventListener("click", () => {
+      if (circle.classList.contains("present")) {
+        circle.classList.remove("present");
+        circle.classList.add("absent");
+      } else if (circle.classList.contains("absent")) {
+        circle.classList.remove("absent");
+      } else {
+        circle.classList.add("present");
+      }
+    });
+  });
 
-        // Dropdown redirect
-        function goToPage(value) {
-            if (value === "assignment") {
-                window.location.href = "page5.html";
-            } else if (value === "seminar") {
-                window.location.href = "page6.html";
-            } else if (value === "exam") {
-                window.location.href = "page7.html";
-            }
-        }
+  // ✅ SAVE ATTENDANCE
+  document.getElementById("saveAttendanceBtn").addEventListener("click", async () => {
 
-        // ---------- Fixed Attendance Feature ----------
-        const circles = document.querySelectorAll(".circle");
+    const attendanceData = {};
+    circles.forEach(circle => {
+      attendanceData[circle.dataset.hour] =
+        circle.classList.contains("present") ? "present" : "absent";
+    });
 
-        circles.forEach(circle => {
-            let clickCount = 0;
+    await setDoc(
+      doc(db, "teacherAvailability", teacherEmail),
+      {
+        department: teacherDept,
+        subject: teacherSubject,
+        [todayKey]: attendanceData
+      },
+      { merge: true }
+    );
 
-            circle.addEventListener("click", () => {
-                clickCount++;
-                setTimeout(() => {
-                    if (clickCount === 1) {
-                        // Single click → Present
-                        circle.classList.remove("absent");
-                        circle.classList.add("present");
-                    } else if (clickCount === 2) {
-                        // Double click → Absent
-                        circle.classList.remove("present");
-                        circle.classList.add("absent");
-                    }
-                    clickCount = 0; // reset counter
-                }, 300); // wait 300ms to detect double click
-            });
-        });
-
-    </script>
+    alert("Attendance saved successfully!");
+  });
+</script>
 
 </body>
-
 </html>

@@ -1,125 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TimeTrack | Timetable Selector</title>
-    <link rel="stylesheet" href="styles/style2.css">
+<meta charset="UTF-8">
+<title>TimeTrack | Timetable Selector</title>
+<link rel="stylesheet" href="styles/style2.css">
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo-icon">📅</div>
-            <h1>Timetable Viewer</h1>
-            <p class="subtitle">Select your preferences to view the schedule</p>
-        </div>
 
-        <div class="login-buttons">
-            <button onclick="window.location.href='page10.html'" class="login-btn">
-                👨‍🎓 Student Login
-            </button>
+<!-- ===== LOGIN OPTIONS ===== -->
+<div style="display:flex; justify-content:center; gap:20px; margin:30px 0;">
+  <button onclick="window.location.href='page3.html'">
+    👩‍🏫 Teacher Login
+  </button>
 
-            <a href="page3.html" class="login-btn">👩‍🏫 Teacher Login</a>
-        </div>
+  <button onclick="window.location.href='page10.html'">
+    👨‍🎓 Student Login
+  </button>
+</div>
 
-        <form id="timetableForm">
-            <div class="form-group">
-                <label for="Department">
-                    Department
-                    <span class="info-badge">🏫 Required</span>
-                </label>
-                <select name="Department" id="Department" required>
-                    <option value="">Select Department</option>
-                    <!-- MATCH EXACTLY AS ADMIN SAVES -->
-                    <option value="BSc Computer Science">BSc Computer Science</option>
-                    <option value="BSc Biotechnology" disabled>BSc Biotechnology</option>
-                    <option value="BA English" disabled>BA English</option>
-                    <option value="BVoc (Accountancy)" disabled>BVoc (Accountancy)</option>
-                    <option value="BSc Biochemistry" disabled>BSc Biochemistry</option>
-                    <option value="BSc Double Main" disabled>BSc Double Main</option>
-                    <option value="BA Economics" disabled>BA Economics</option>
-                    <option value="BA West Asia" disabled>BA West Asia</option>
-                    <option value="BSc Microbiology" disabled>BSc Microbiology</option>
-                    <option value="BCom (CA)" disabled>BCom (CA)</option>
-                    <option value="BCom (Cooperation)" disabled>BCom (Cooperation)</option>
-                    <option value="BBA" disabled>BBA</option>
-                    <option value="BVoc (Logistics)" disabled>BVoc (Logistics)</option>
-                </select>
-            </div>
+<!-- ===== TIMETABLE SELECTOR ===== -->
+<div class="container">
+  <h1>Timetable Viewer</h1>
 
-            <div class="form-group">
-                <label for="Semester">
-                    Semester
-                    <span class="info-badge">📚 Required</span>
-                </label>
-                <select name="Semester" id="Semester" required>
-                    <option value="">Select Semester</option>
-                    <option value="1">Semester 1</option>
-                    <option value="2" disabled>Semester 2</option>
-                    <option value="3">Semester 3</option>
-                    <option value="4" disabled>Semester 4</option>
-                    <option value="5" disabled>Semester 5</option>
-                    <option value="6" disabled>Semester 6</option>
-                    <option value="7" disabled>Semester 7</option>
-                    <option value="8" disabled>Semester 8</option>
-                </select>
-            </div>
+  <form id="timetableForm">
+    <label>Department</label>
+    <select id="Department" required>
+      <option value="">Select</option>
+      <option value="BSc Computer Science">BSc Computer Science</option>
+      <option value="BSc Biotechnology">BSc Biotechnology</option>
+      <option value="BA English">BA English</option>
+    </select>
 
-            <div class="form-group">
-                <label for="Day">
-                    Day
-                    <span class="info-badge">📆 Required</span>
-                </label>
-                <select name="Day" id="Day" required>
-                    <option value="">Select Day</option>
-                    <option value="All">All Days</option>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                </select>
-            </div>
+    <label>Semester</label>
+    <select id="Semester" required>
+      <option value="">Select</option>
+      <option value="1">Semester 1</option>
+      <option value="3">Semester 3</option>
+    </select>
 
-            <button type="submit" class="submit-btn">View Timetable →</button>
-        </form>
-    </div>
+    <label>Day</label>
+    <select id="Day" required>
+      <!-- ✅ ADDED TODAY OPTION -->
+      <option value="TODAY">Today</option>
+      <option value="All">All</option>
+      <option value="Monday">Monday</option>
+      <option value="Tuesday">Tuesday</option>
+      <option value="Wednesday">Wednesday</option>
+      <option value="Thursday">Thursday</option>
+      <option value="Friday">Friday</option>
+    </select>
 
-    <script>
-        document.getElementById('timetableForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+    <button type="submit">View Timetable</button>
+  </form>
+</div>
 
-            const departmentValue = document.getElementById("Department").value;
-            const semesterValue = document.getElementById("Semester").value;
-            const dayValue = document.getElementById("Day").value;
+<script>
+document.getElementById("timetableForm").addEventListener("submit", e => {
+  e.preventDefault();
 
-            if (!departmentValue) {
-                alert("Please select a department");
-                return;
-            }
+  let selectedDay = Day.value;
 
-            if (!semesterValue) {
-                alert("Please select a semester");
-                return;
-            }
+  // ✅ IF TODAY → AUTO DETECT CURRENT DAY
+  if (selectedDay === "TODAY") {
+    const todayIndex = new Date().getDay(); 
+    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    selectedDay = days[todayIndex];
+  }
 
-            if (!dayValue) {
-                alert("Please select a day");
-                return;
-            }
+  sessionStorage.setItem("data", JSON.stringify({
+    department: Department.value,
+    semester: Semester.value,
+    day: selectedDay
+  }));
 
-            const data = {
-                department: departmentValue,
-                semester: semesterValue,
-                day: dayValue
-            };
+  window.location.href = "page9.html";
+});
+</script>
 
-            sessionStorage.setItem("data", JSON.stringify(data));
-
-            window.location.href = "page9.html";
-        });
-    </script>
 </body>
 </html>

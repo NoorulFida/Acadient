@@ -1,109 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
   <title>TimeTrack | Timetable</title>
-   <link rel="stylesheet" href="styles/style9.css">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles/style9.css">
 </head>
+
 <body>
-  <div class="header">
-    <button class="arrow" onclick="location.href='page2.html'">← Back</button>
+
+<div class="header">
+  <button class="arrow" onclick="location.href='page2.html'">← Back</button>
+</div>
+
+<div class="container">
+  <div class="page-header">
+    <div class="logo-icon">📅</div>
+    <h2 id="title">Timetable</h2>
+    <p class="subtitle" id="subtitle">View your weekly schedule</p>
   </div>
 
-  <div class="container">
-    <div class="page-header">
-      <div class="logo-icon">📅</div>
-      <h2 id="title">Timetable</h2>
-      <p class="subtitle" id="subtitle">View your weekly schedule</p>
-    </div>
+  <div class="timetable" id="timetable"></div>
+</div>
 
-    <div class="timetable" id="timetable"></div>
-  </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-  <script>
-    /* ================= FULL TIMETABLE JSON ================= */
-    const timetableData = {
-      "Bsc Computer Science": {
-        "3": {
-          "Monday": [
-            "Mathematics",
-            "Data Structures",
-            "Operating Systems",
-            "DBMS",
-            "Programming Lab"
-          ],
-          "Tuesday": [
-            "Operating Systems",
-            "Mathematics",
-            "DBMS",
-            "Data Structures",
-            "Library"
-          ],
-          "Wednesday": [
-            "Data Structures",
-            "Operating Systems",
-            "Mathematics",
-            "DBMS",
-            "Programming Lab"
-          ],
-          "Thursday": [
-            "DBMS",
-            "Data Structures",
-            "Operating Systems",
-            "Mathematics",
-            "Sports"
-          ],
-          "Friday": [
-            "Programming Lab",
-            "Mathematics",
-            "Data Structures",
-            "Operating Systems",
-            "DBMS"
-          ]
-        }
-      }
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyCYMh-jojmpS07qjB4hbAE4VRwU0w9zkw0",
+    authDomain: "login-form-74d6e.firebaseapp.com",
+    projectId: "login-form-74d6e",
+    storageBucket: "login-form-74d6e.appspot.com",
+    messagingSenderId: "305047532936",
+    appId: "1:305047532936:web:8f7df19681a700f66df63d"
+  };
 
-    /* ================= READ USER DATA ================= */
-    const userData = JSON.parse(sessionStorage.getItem("data"));
-    const timetableDiv = document.getElementById("timetable");
-    const heading = document.getElementById("title");
-    const subtitle = document.getElementById("subtitle");
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    if (!userData) {
-      timetableDiv.innerHTML = '<div class="no-data" colspan="4">📋 No data found. Please go back and select your preferences.</div>';
-    } else {
-      const { department, semester, day } = userData;
-      const timetable = timetableData[department]?.[semester];
-      heading.textContent = `${department}`;
-      subtitle.textContent = `Semester ${semester} Schedule`;
+  const userData = JSON.parse(sessionStorage.getItem("data"));
+  const timetableDiv = document.getElementById("timetable");
+  const title = document.getElementById("title");
+  const subtitle = document.getElementById("subtitle");
 
-      if (!timetable) {
-        timetableDiv.innerHTML = '<div class="no-data">📋 Timetable not available for the selected options.</div>';
-      } else {
-        const daysToShow = day === "All" ? Object.keys(timetable) : [day];
+  if (!userData) {
+    timetableDiv.innerHTML = `<div class="no-data">No data found</div>`;
+    throw new Error("No session data");
+  }
 
-        let html = `
-          <div></div>
-          <div class="timetable-cell header-cell">Hour 1</div>
-          <div class="timetable-cell header-cell">Hour 2</div>
-          <div class="timetable-cell header-cell">Hour 3</div>
-          <div class="timetable-cell header-cell">Hour 4</div>
-          <div class="timetable-cell header-cell">Hour 5</div>
-        `;
+  const { department, semester, day } = userData;
 
-        daysToShow.forEach(d => {
-          html += `<div class="timetable-cell day-cell">${d}</div>`;
-          timetable[d].forEach(subject => {
-            html += `<div class="timetable-cell subject-cell">${subject}</div>`;
-          });
-        });
+  title.innerText = department;
+  subtitle.innerText = `Semester ${semester} Timetable`;
 
-        timetableDiv.innerHTML = html;
-      }
+  async function loadTimetable() {
+    const deptId = department.trim().replace(/\s+/g, "_");
+    const semId = `sem_${semester}`;
+
+    const ref = doc(db, "timetables", deptId, "semesters", semId);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+      timetableDiv.innerHTML = `<div class="no-data">Timetable not available</div>`;
+      return;
     }
-  </script>
+
+    const data = snap.data();
+    const daysArr = day === "All"
+      ? ["monday", "tuesday", "wednesday", "thursday", "friday"]
+      : [day.toLowerCase()];
+
+    renderTable(data, daysArr);
+  }
+
+  function renderTable(data, daysArr) {
+    let html = `<div></div>
+      <div class="timetable-cell header-cell">Hour 1</div>
+      <div class="timetable-cell header-cell">Hour 2</div>
+      <div class="timetable-cell header-cell">Hour 3</div>
+      <div class="timetable-cell header-cell">Hour 4</div>
+      <div class="timetable-cell header-cell">Hour 5</div>`;
+
+    daysArr.forEach(d => {
+      html += `<div class="timetable-cell day-cell">${capitalize(d)}</div>`;
+      for (let i = 1; i <= 5; i++) {
+        html += `<div class="timetable-cell subject-cell">${data[d]?.[i]?.subject || "-"}
+          ${data[d]?.[i]?.availability || "-"}
+          </div>`;
+
+      }
+    });
+
+    timetableDiv.innerHTML = html;
+  }
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  loadTimetable();
+</script>
+
 </body>
 </html>

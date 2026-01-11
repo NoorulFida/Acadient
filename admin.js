@@ -88,13 +88,7 @@ function buildEmptyGrid() {
       row.innerHTML += `
         <td>
           <input placeholder="Subject"><br>
-         <select>
-  <option value="class">Class</option>
-  <option value="free">Free</option>
-  <option value="exam">Exam</option>
-  <option value="seminar">Seminar</option>
-  <option value="assignment">Assignment</option>
-</select>
+       
         </td>
       `;
     }
@@ -102,7 +96,13 @@ function buildEmptyGrid() {
   });
 }
 
-
+//   <select>
+//   <option value="class">Class</option>
+//   <option value="free">Free</option>
+//   <option value="exam">Exam</option>
+//   <option value="seminar">Seminar</option>
+//   <option value="assignment">Assignment</option>
+// </select>
 
 buildEmptyGrid();
 
@@ -125,10 +125,10 @@ window.loadTimetable = async () => {
     for (let j = 1; j <= 5; j++) {
       const cell = table.rows[i].cells[j];
       cell.children[0].value = data[day][j].subject;
-      cell.children[2].value = data[day][j].availability;
+      // cell.children[2].value = data[day][j].availability;
     }
   }
-};
+};a
 
 window.saveTimetable = async () => {
   const dept = Department.value;
@@ -145,7 +145,8 @@ window.saveTimetable = async () => {
       const cell = table.rows[i].cells[j];
       data[day][j] = {
         subject: cell.children[0].value,
-        availability: cell.children[2].value,
+        availability: 'dont_know', // available , not_available
+        // availability: cell.children[2].value,
         assignments: [],
         seminars: [],
         exams: []
@@ -157,3 +158,58 @@ window.saveTimetable = async () => {
   await setDoc(ref, data);
   alert("Timetable Saved ✅");
 };
+
+
+// =================================================
+// =============== LIST TIMETABLES =================
+// =================================================
+
+window.loadTimetableList = async function () {
+  const tbody = document.getElementById("timetableList");
+  tbody.innerHTML = "";
+
+  const deptSnap = await getDocs(collection(db, "timetables"));
+
+  deptSnap.forEach(async deptDoc => {
+    const deptId = deptDoc.id;
+
+    const semSnap = await getDocs(
+      collection(db, "timetables", deptId, "semesters")
+    );
+
+    semSnap.forEach(semDoc => {
+      const sem = semDoc.id.replace("sem_", "");
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${deptId.replace(/_/g, " ")}</td>
+        <td>${sem}</td>
+        <td>
+          <button onclick="viewTimetable('${deptId}', '${sem}')">
+            View
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  });
+};
+window.viewTimetable = async (deptId, sem) => {
+  // switch UI
+  document.getElementById("listSection").style.display = "none";
+  document.getElementById("searchSection").style.display = "block";
+
+  btnSearch.classList.add("active");
+  btnList.classList.remove("active");
+
+  // set dropdowns
+  Department.value = deptId.replace(/_/g, " ");
+  Semester.value = sem;
+
+  // load timetable data
+  await loadTimetable();
+};
+
+
+
+

@@ -1,204 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Acadient | Admin Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acadient | Admin Dashboard</title>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6fb;
+    * {
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    h2, h3 {
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    h2 {
       text-align: center;
+      color: white;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      margin-bottom: 30px;
     }
 
     /* ===== MAIN TABS ===== */
     .tabs {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
     }
 
     .tabs button,
     .sub-tabs button {
-      padding: 10px 16px;
+      padding: 12px 24px;
       border: none;
-      border-radius: 6px;
-      font-weight: bold;
+      border-radius: 12px;
+      font-weight: 600;
       cursor: pointer;
-      background: #ddd;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .tabs button:hover,
+    .sub-tabs button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
     }
 
     .tabs button.active,
     .sub-tabs button.active {
-      background: #4a6cf7;
-      color: white;
+      background: white;
+      color: #203a43;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
     .section {
       max-width: 1100px;
       margin: auto;
       background: white;
-      padding: 20px;
-      border-radius: 8px;
+      padding: 30px;
+      border-radius: 20px;
       display: none;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    h3 {
+      text-align: center;
+      color: #203a43;
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      font-weight: 700;
     }
 
     .sub-tabs {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 15px;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .sub-tabs button {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .sub-tabs button.active {
+      background: #203a43;
+      color: white;
     }
 
     table {
       width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     }
 
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
+    th,
+    td {
+      border: 1px solid #e0e0e0;
+      padding: 12px;
       text-align: center;
     }
 
     th {
-      background: #4a6cf7;
+      background: linear-gradient(135deg, #203a43 0%, #2c5364 100%);
       color: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    select, input {
+    td {
+      background: white;
+    }
+
+    select,
+    input {
       width: 100%;
-      padding: 6px;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+
+    select:focus,
+    input:focus {
+      outline: none;
+      border-color: #203a43;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(32, 58, 67, 0.1);
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #333;
       margin-bottom: 8px;
+      margin-top: 10px;
+      font-size: 0.95rem;
     }
 
     button.action {
-      padding: 6px 10px;
-      border-radius: 4px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    button[onclick="loadTimetable()"],
+    button[onclick="saveTimetable()"] {
+      width: 100%;
+      background: linear-gradient(135deg, #203a43 0%, #2c5364 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+      box-shadow: 0 4px 15px rgba(32, 58, 67, 0.3);
+    }
+
+    button[onclick="loadTimetable()"]:hover,
+    button[onclick="saveTimetable()"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(32, 58, 67, 0.4);
+    }
+
+    #timetableList {
+      background: white;
+    }
+
+    @media (max-width: 768px) {
+      h2 {
+        font-size: 2rem;
+      }
+
+      .section {
+        padding: 20px;
+      }
+
+      table {
+        font-size: 0.85rem;
+      }
+
+      th,
+      td {
+        padding: 8px 4px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<h2>Admin Dashboard</h2>
+  <h2>Admin Dashboard</h2>
+  <p class="subtitle">Manage teachers and timetables efficiently</p>
 
-<!-- ===== MAIN TABS ===== -->
-<div class="tabs">
-  <button id="tabTeachers" class="active" onclick="showTeachers()">Handle Teachers</button>
-  <button id="tabTimetable" onclick="showTimetable()">Handle Timetable</button>
-</div>
-
-<!-- ================= TEACHERS ================= -->
-<div class="section" id="teachersSection" style="display:block;">
-  <h3>Teachers Management</h3>
-  <div id="teachersTable"></div>
-</div>
-
-<!-- ================= TIMETABLE ================= -->
-<div class="section" id="timetableSection">
-
-  <h3>Timetable Management</h3>
-
-  <!-- ===== SUB TABS ===== -->
-  <div class="sub-tabs">
-    <button id="btnList" class="active" onclick="showList()">List Timetables</button>
-    <button id="btnSearch" onclick="showSearch()">Search Timetable</button>
+  <!-- ===== MAIN TABS ===== -->
+  <div class="tabs">
+    <button id="tabTeachers" class="active" onclick="showTeachers()">Handle Teachers</button>
+    <button id="tabTimetable" onclick="showTimetable()">Handle Timetable</button>
   </div>
 
-  <!-- ===== LIST TIMETABLES ===== -->
-  <div id="listSection">
-    <table>
-      <thead>
+  <!-- ================= TEACHERS ================= -->
+  <div class="section" id="teachersSection" style="display:block;">
+    <h3>Teachers Management</h3>
+    <div id="teachersTable"></div>
+  </div>
+
+  <!-- ================= TIMETABLE ================= -->
+  <div class="section" id="timetableSection">
+
+    <h3>Timetable Management</h3>
+
+    <!-- ===== SUB TABS ===== -->
+    <div class="sub-tabs">
+      <button id="btnList" class="active" onclick="showList()">List Timetables</button>
+      <button id="btnSearch" onclick="showSearch()">Create Timetable</button>
+    </div>
+
+    <div id="listSection">
+      <table>
+        <thead>
+          <tr>
+            <th>Department</th>
+            <th>Semester</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="timetableList"></tbody>
+      </table>
+    </div>
+
+
+    <!-- ===== SEARCH / VIEW TIMETABLE ===== -->
+    <div id="searchSection" style="display:none;">
+
+      <label>Department</label>
+      <select id="Department">
+        <option value="">Select</option>
+        <option value="BSc Computer Science">BSc Computer Science</option>
+        <option value="BSc Biotechnology">BSc Biotechnology</option>
+        <option value="BA English">BA English</option>
+      </select>
+
+      <label>Semester</label>
+      <select id="Semester">
+        <option value="">Select</option>
+        <option value="1">Semester 1</option>
+        <option value="2">Semester 2</option>
+        <option value="3">Semester 3</option>
+        <option value="4">Semester 4</option>
+        <option value="5">Semester 5</option>
+      </select>
+
+      <button onclick="loadTimetable()">Load Timetable</button>
+
+      <table id="timetableGrid">
         <tr>
-          <th>Department</th>
-          <th>Semester</th>
-          <th>Action</th>
+          <th>Day / Period</th>
+          <th>P1</th>
+          <th>P2</th>
+          <th>P3</th>
+          <th>P4</th>
+          <th>P5</th>
         </tr>
-      </thead>
-      <tbody id="timetableList">
-        <!-- Filled by admin.js -->
-      </tbody>
-    </table>
+      </table>
+
+      <br>
+      <button onclick="saveTimetable()">Save / Update</button>
+    </div>
+
   </div>
 
-  <!-- ===== SEARCH / VIEW TIMETABLE ===== -->
-  <div id="searchSection" style="display:none;">
+  <script type="module" src="admin.js"></script>
 
-    <label>Department</label>
-    <select id="Department">
-      <option value="">Select</option>
-      <option value="BSc Computer Science">BSc Computer Science</option>
-      <option value="BSc Biotechnology">BSc Biotechnology</option>
-      <option value="BA English">BA English</option>
-    </select>
+  <script>
+    /* ===== MAIN TABS ===== */
+    function showTeachers() {
+      teachersSection.style.display = "block";
+      timetableSection.style.display = "none";
+      tabTeachers.classList.add("active");
+      tabTimetable.classList.remove("active");
+    }
 
-    <label>Semester</label>
-    <select id="Semester">
-      <option value="">Select</option>
-      <option value="1">Semester 1</option>
-      <option value="2">Semester 2</option>
-      <option value="3">Semester 3</option>
-      <option value="4">Semester 4</option>
-      <option value="5">Semester 5</option>
-    </select>
+    function showTimetable() {
+      teachersSection.style.display = "none";
+      timetableSection.style.display = "block";
+      tabTimetable.classList.add("active");
+      tabTeachers.classList.remove("active");
+    }
+    /* ===== SUB TABS ===== */
+    function showList() {
+      listSection.style.display = "block";
+      searchSection.style.display = "none";
+      btnList.classList.add("active");
+      btnSearch.classList.remove("active");
 
-    <button onclick="loadTimetable()">Load Timetable</button>
 
-    <table id="timetableGrid">
-      <tr>
-        <th>Day / Period</th>
-        <th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th>
-      </tr>
-    </table>
+      loadTimetableList();
+    }
 
-    <br>
-    <button onclick="saveTimetable()">Save / Update</button>
-  </div>
-
-</div>
-
-<script type="module" src="admin.js"></script>
-
-<script>
-  /* ===== MAIN TABS ===== */
-  function showTeachers() {
-    teachersSection.style.display = "block";
-    timetableSection.style.display = "none";
-    tabTeachers.classList.add("active");
-    tabTimetable.classList.remove("active");
-  }
-
-  function showTimetable() {
-    teachersSection.style.display = "none";
-    timetableSection.style.display = "block";
-    tabTimetable.classList.add("active");
-    tabTeachers.classList.remove("active");
-  }
-
-  /* ===== SUB TABS ===== */
-  function showList() {
-    listSection.style.display = "block";
-    searchSection.style.display = "none";
-    btnList.classList.add("active");
-    btnSearch.classList.remove("active");
-  }
-
-  function showSearch() {
-    listSection.style.display = "none";
-    searchSection.style.display = "block";
-    btnSearch.classList.add("active");
-    btnList.classList.remove("active");
-  }
-</script>
+    function showSearch() {
+      listSection.style.display = "none";
+      searchSection.style.display = "block";
+      btnSearch.classList.add("active");
+      btnList.classList.remove("active");
+    }
+  </script>
 
 </body>
+
 </html>

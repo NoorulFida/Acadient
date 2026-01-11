@@ -320,3 +320,24 @@ p {
         padding: 20px 16px;
     }
 }
+ .arrow {
+      font-size: 15px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      padding: 5px 10px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      line-height: 1;
+      color: #2d3748;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .arrow:hover {
+      background: linear-gradient(135deg, #2c5364 0%, #203a43 100%);
+      color: white;
+      transform: translateX(-5px);
+      border-color: #2c5364;
+    }

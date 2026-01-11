@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TimeTrack | Timetable Selector</title>
     <link rel="stylesheet" href="styles/style2.css">
-  
 </head>
 
 <body>
@@ -33,19 +32,20 @@
                 </label>
                 <select name="Department" id="Department" required>
                     <option value="">Select Department</option>
-                    <option value="Bsc Computer Science">BSc Computer Science</option>
-                    <option value="Bvoc (Accountancy)" disabled>BVoc (Accountancy)</option>
-                    <option value="Bsc Biotechnology" disabled>BSc Biotechnology</option>
-                    <option value="Bsc Biochemistry" disabled>BSc Biochemistry</option>
-                    <option value="Bsc Double Main" disabled>BSc Double Main</option>
+                    <!-- MATCH EXACTLY AS ADMIN SAVES -->
+                    <option value="BSc Computer Science">BSc Computer Science</option>
+                    <option value="BSc Biotechnology" disabled>BSc Biotechnology</option>
                     <option value="BA English" disabled>BA English</option>
+                    <option value="BVoc (Accountancy)" disabled>BVoc (Accountancy)</option>
+                    <option value="BSc Biochemistry" disabled>BSc Biochemistry</option>
+                    <option value="BSc Double Main" disabled>BSc Double Main</option>
                     <option value="BA Economics" disabled>BA Economics</option>
                     <option value="BA West Asia" disabled>BA West Asia</option>
-                    <option value="Bsc Microbiology" disabled>BSc Microbiology</option>
-                    <option value="Bcom (CA)" disabled>BCom (CA)</option>
-                    <option value="Bcom (Cooperation)" disabled>BCom (Cooperation)</option>
+                    <option value="BSc Microbiology" disabled>BSc Microbiology</option>
+                    <option value="BCom (CA)" disabled>BCom (CA)</option>
+                    <option value="BCom (Cooperation)" disabled>BCom (Cooperation)</option>
                     <option value="BBA" disabled>BBA</option>
-                    <option value="Bvoc (Logistics)" disabled>BVoc (Logistics)</option>
+                    <option value="BVoc (Logistics)" disabled>BVoc (Logistics)</option>
                 </select>
             </div>
 
@@ -56,7 +56,7 @@
                 </label>
                 <select name="Semester" id="Semester" required>
                     <option value="">Select Semester</option>
-                    <option value="1" disabled>Semester 1</option>
+                    <option value="1">Semester 1</option>
                     <option value="2" disabled>Semester 2</option>
                     <option value="3">Semester 3</option>
                     <option value="4" disabled>Semester 4</option>
@@ -116,12 +116,10 @@
                 day: dayValue
             };
 
-            sessionStorage.removeItem("data");
             sessionStorage.setItem("data", JSON.stringify(data));
 
             window.location.href = "page9.html";
         });
     </script>
 </body>
-
 </html>

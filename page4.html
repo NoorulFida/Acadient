@@ -18,6 +18,19 @@
       color: #203a43;
     }
 
+    .date-picker {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
+    .date-picker input {
+      padding: 8px 12px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
     .save-btn {
       margin: 20px auto;
       padding: 12px 25px;
@@ -26,6 +39,13 @@
       border:none;
       border-radius:8px;
       cursor:pointer;
+    }
+    .sem-collector{
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+      max-width: 200px;
+      
     }
   </style>
 </head>
@@ -45,6 +65,19 @@
 
     <div class="today-line" id="todayLine"></div>
 
+    <!-- ✅ DATE SELECTOR -->
+    <div class="date-picker">
+      <input type="date" id="attendanceDate">
+    </div>
+<div class="sem-collector">
+   <label for="semester">Choose a semester:</label>
+  <select name="semester" id="semester">
+    <option value="1">1</option>
+    <option value="3">3</option>
+   
+  </select>
+  <br><br>
+</div>
     <h2>Available Hours</h2>
 
     <div class="circle-container">
@@ -62,7 +95,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+  import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCYMh-jojmpS07qjB4hbAE4VRwU0w9zkw0",
@@ -73,7 +106,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // ✅ FULL SESSION CHECK
+  // ✅ SESSION CHECK
   const teacherEmail = sessionStorage.getItem("teacherEmail");
   const teacherDept = sessionStorage.getItem("teacherDept");
   const teacherSubject = sessionStorage.getItem("teacherSubject");
@@ -84,19 +117,16 @@
     window.location.href = "page3.html";
   }
 
-  // ✅ TODAY
-  const todayObj = new Date();
-  const todayKey = todayObj.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+  // ✅ DATE SETUP
+  const today = new Date();
+  const todayISO = today.toISOString().split("T")[0];
+
+  document.getElementById("attendanceDate").value = todayISO;
 
   document.getElementById("todayLine").innerText =
-    "Today : " + todayObj.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
+    "Today : " + today.toDateString();
 
-  // ✅ CIRCLES
+  // ✅ CIRCLES TOGGLE
   const circles = document.querySelectorAll(".circle");
   circles.forEach(circle => {
     circle.addEventListener("click", () => {
@@ -112,27 +142,64 @@
   });
 
   // ✅ SAVE ATTENDANCE
-  document.getElementById("saveAttendanceBtn").addEventListener("click", async () => {
 
-    const attendanceData = {};
+
+document.getElementById("saveAttendanceBtn").addEventListener("click", async () => {
+  try {
+   
+     const selectedDate = document.getElementById("attendanceDate").value;
+      const selectedSemester = document.getElementById("semester").value;
+    if (!selectedDate) {
+      alert("Please select a date");
+      return;
+    }
+    if (!selectedSemester) {
+      alert("Please select a semester");
+      return;
+    }
+
+
+    // ✅ Convert date → day (monday, tuesday...)
+    const dayName = new Date(selectedDate)
+      .toLocaleDateString("en-US", { weekday: "long" })
+      .toLowerCase();
+
+    // ❌ Block weekends
+    if (dayName === "saturday" || dayName === "sunday") {
+      alert("No timetable on weekends");
+      return;
+    }
+
+    // ✅ Collect availability from circles
+    const availabilityUpdate = {};
+
     circles.forEach(circle => {
-      attendanceData[circle.dataset.hour] =
+      const hour = circle.dataset.hour;
+      availabilityUpdate[`${dayName}.P${hour}.availability`] =
         circle.classList.contains("present") ? "present" : "absent";
     });
 
-    await setDoc(
-      doc(db, "teacherAvailability", teacherEmail),
-      {
-        department: teacherDept,
-        subject: teacherSubject,
-        [todayKey]: attendanceData
-      },
-      { merge: true }
+    // ✅ Reference to existing timetable document
+    const timetableRef = doc(
+      db,
+      "timetables",
+      teacherDept.replace(/\s+/g, "_"),
+      "semesters",
+      `sem_${selectedSemester}`
     );
 
-    alert("Attendance saved successfully!");
-  });
-</script>
+    // ✅ UPDATE ONLY availability
+    await updateDoc(timetableRef, availabilityUpdate);
 
+    console.log("Availability updated successfully");
+    alert(`Availability saved for ${dayName.toUpperCase()}`);
+
+  } catch (error) {
+    console.error("Error updating availability:", error);
+    alert("Failed to save availability");
+  }
+});
+
+</script>
 </body>
 </html>

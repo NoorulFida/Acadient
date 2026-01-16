@@ -134,7 +134,7 @@ window.saveTimetable = async () => {
     for (let j = 1; j <= 5; j++) {
       data[day][`P${j}`] = {
         subject: table.rows[i].cells[j].children[0].value,
-        availability: "available"
+        availability: "notknown"
       };
     }
   }

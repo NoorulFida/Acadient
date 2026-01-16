@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <title>TimeTrack | Timetable Selector</title>
 <link rel="stylesheet" href="styles/style2.css">
+
+<style>
+  .date-picker {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+
+  .date-picker input {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+</style>
 </head>
 
 <body>
@@ -23,6 +38,11 @@
 <div class="container">
   <h1>Timetable Viewer</h1>
 
+  <!-- ✅ DATE SELECTOR -->
+  <div class="date-picker">
+    <input type="date" id="selectedDate">
+  </div>
+
   <form id="timetableForm">
     <label>Department</label>
     <select id="Department" required>
@@ -41,8 +61,7 @@
 
     <label>Day</label>
     <select id="Day" required>
-      <!-- ✅ ADDED TODAY OPTION -->
-      <option value="TODAY">Today</option>
+      <option value="AUTO">Auto (from date)</option>
       <option value="All">All</option>
       <option value="Monday">Monday</option>
       <option value="Tuesday">Tuesday</option>
@@ -55,28 +74,42 @@
   </form>
 </div>
 
+
 <script>
-document.getElementById("timetableForm").addEventListener("submit", e => {
-  e.preventDefault();
+  // ✅ DEFAULT DATE = TODAY
+  const dateInput = document.getElementById("selectedDate");
+  const today = new Date().toISOString().split("T")[0];
+  dateInput.value = today;
 
-  let selectedDay = Day.value;
+  document.getElementById("timetableForm").addEventListener("submit", e => {
+    e.preventDefault();
 
-  // ✅ IF TODAY → AUTO DETECT CURRENT DAY
-  if (selectedDay === "TODAY") {
-    const todayIndex = new Date().getDay(); 
-    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    selectedDay = days[todayIndex];
-  }
+    let selectedDate = dateInput.value;
+    let selectedDay = Day.value;
 
-  sessionStorage.setItem("data", JSON.stringify({
-    department: Department.value,
-    semester: Semester.value,
-    day: selectedDay
-  }));
+    if (!selectedDate) {
+      alert("Please select a date");
+      return;
+    }
 
-  window.location.href = "page9.html";
-});
+    // ✅ AUTO DETECT DAY FROM DATE
+    if (selectedDay === "AUTO") {
+      const dateObj = new Date(selectedDate);
+      const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      selectedDay = days[dateObj.getDay()];
+    }
+
+    sessionStorage.setItem("data", JSON.stringify({
+      department: Department.value,
+      semester: Semester.value,
+      day: selectedDay,
+      date: selectedDate
+    }));
+
+    window.location.href = "page9.html";
+  });
 </script>
 
 </body>
 </html>
+

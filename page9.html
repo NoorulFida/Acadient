@@ -67,77 +67,67 @@
   title.innerText = department;
   subtitle.innerText = `Semester ${semester}`;
 
-  async function loadTimetable() {
-    const deptId = department.replace(/\s+/g, "_");
-    const semId = `sem_${semester}`;
+ async function loadTimetable() {
+  const deptId = department.replace(/\s+/g, "_");
+  const semId = `sem_${semester}`;
 
-    const timetableRef = doc(db, "timetables", deptId, "semesters", semId);
-    const timetableSnap = await getDoc(timetableRef);
+  const timetableRef = doc(db, "timetables", deptId, "semesters", semId);
+  const timetableSnap = await getDoc(timetableRef);
 
-    if (!timetableSnap.exists()) {
-      timetableDiv.innerHTML = "Timetable not available";
-      return;
-    }
-
-    const timetableData = timetableSnap.data();
-
-    let days = [];
-    if (day === "All") {
-      days = ["monday", "tuesday", "wednesday", "thursday", "friday"];
-    } else if (day === "Today") {
-      const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
-      days = [today.toLowerCase()];
-    } else {
-      days = [day.toLowerCase()];
-    }
-
-    // ✅ Load teacher availability
-    const availabilitySnap = await getDocs(collection(db, "teacherAvailability"));
-    const availability = [];
-
-    availabilitySnap.forEach(d => {
-      availability.push({ email: d.id, ...d.data() });
-    });
-
-    renderTable(timetableData, days, availability);
+  if (!timetableSnap.exists()) {
+    timetableDiv.innerHTML = "Timetable not available";
+    return;
   }
 
-  function renderTable(timetableData, days, availability) {
-    let html = `
-      <div></div>
-      <div class="timetable-cell header-cell">H1</div>
-      <div class="timetable-cell header-cell">H2</div>
-      <div class="timetable-cell header-cell">H3</div>
-      <div class="timetable-cell header-cell">H4</div>
-      <div class="timetable-cell header-cell">H5</div>
-    `;
+  const timetableData = timetableSnap.data();
 
-    days.forEach(d => {
-      html += `<div class="timetable-cell day-cell">${d.toUpperCase()}</div>`;
-
-      for (let i = 1; i <= 5; i++) {
-        const subject = timetableData[d]?.[`P${i}`]?.subject || "-";
-        let className = "";
-
-        if (subject !== "-") {
-          const teacher = availability.find(t => t.subject === subject);
-
-          if (teacher && teacher[d] && teacher[d][i]) {
-            if (teacher[d][i] === "present") className = "present-subject";
-            if (teacher[d][i] === "absent") className = "absent-subject";
-          }
-        }
-
-        html += `
-          <div class="timetable-cell subject-cell ${className}">
-            ${subject}
-          </div>
-        `;
-      }
-    });
-
-    timetableDiv.innerHTML = html;
+  let days = [];
+  if (day === "All") {
+    days = ["monday", "tuesday", "wednesday", "thursday", "friday"];
+  } else if (day === "Today") {
+    const today = new Date()
+      .toLocaleDateString("en-US", { weekday: "long" })
+      .toLowerCase();
+    days = [today];
+  } else {
+    days = [day.toLowerCase()];
   }
+
+  renderTable(timetableData, days);
+}
+
+function renderTable(timetableData, days) {
+  let html = `
+    <div></div>
+    <div class="timetable-cell header-cell">H1</div>
+    <div class="timetable-cell header-cell">H2</div>
+    <div class="timetable-cell header-cell">H3</div>
+    <div class="timetable-cell header-cell">H4</div>
+    <div class="timetable-cell header-cell">H5</div>
+  `;
+
+  days.forEach(d => {
+    html += `<div class="timetable-cell day-cell">${d.toUpperCase()}</div>`;
+
+    for (let i = 1; i <= 5; i++) {
+      const period = timetableData[d]?.[`P${i}`];
+      const subject = period?.subject || "-";
+      const availability = period?.availability;
+
+      let className = "";
+      if (availability === "present") className = "present-subject";
+      if (availability === "absent") className = "absent-subject";
+
+      html += `
+        <div class="timetable-cell subject-cell ${className}">
+          ${subject}
+        </div>
+      `;
+    }
+  });
+
+  timetableDiv.innerHTML = html;
+}
 
   loadTimetable();
 </script>
